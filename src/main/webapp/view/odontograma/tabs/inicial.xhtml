@@ -1,0 +1,87 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+	<!-- OPCIONES -->
+	<div class="odontograma-flex">
+		<h:outputStylesheet>
+		    .odontograma-flex {
+		        display: flex;
+		        justify-content: space-between;
+		    }
+		</h:outputStylesheet>
+
+		<!-- IZQUIERDA -->
+		<div class="flex-left">
+			<p:fieldset legend="Seleccione el Tipo de Dentición">
+				<p:selectManyCheckbox>
+					<f:selectItem itemLabel="Dentición Mixta" itemValue="MIXTA" />
+					<f:selectItem itemLabel="Dentición Permanente"
+						itemValue="PERMANENTE" />
+					<f:selectItem itemLabel="Dentición Decidua" itemValue="DECIDUA" />
+				</p:selectManyCheckbox>
+			</p:fieldset>
+		</div>
+
+		<!-- DERECHA -->
+		<div class="flex-right">
+			<p:fieldset legend="Seleccione la Fecha de Creación">
+				<p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
+			</p:fieldset>
+		</div>
+
+	</div>
+
+	<div style="margin: 5rem;">
+		<h:outputText value="Odontograma Inicial (pendiente diseño)" />
+	</div>
+
+	<div class="flex-right">
+		<p:fieldset legend="Registro de Hallazgos">
+			<h:form id="formHallazgos">
+
+				<p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
+					styleClass="registro-hallazgos-table" editable="true">				
+
+					<p:column headerText="N° Pieza Dental">
+						<h:outputText value="#{h.piezaDental}" />
+					</p:column>
+
+					<p:column headerText="Hallazgo">
+						<h:outputText value="#{h.descripcion}" />
+					</p:column>
+
+					<p:column headerText="Cantidad">
+						<h:outputText value="#{h.cantidad}" minValue="1" />
+					</p:column>
+
+					<p:column headerText="Nota">
+						<p:inputTextarea value="#{h.nota}" autoResize="true" />
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+
+				<p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
+					action="#{odontogramaBean.adicionarHallazgo}"
+					update="formHallazgos" />
+
+				<h:panelGroup style="margin-left:20px">
+					<strong>Total:</strong> #{odontogramaBean.totalHallazgos}
+    </h:panelGroup>
+
+			</h:form>
+
+		</p:fieldset>
+	</div>	
+
+
+
+
+</ui:composition>
+
+

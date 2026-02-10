@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    
+    <!-- Cargar recursos -->
+    <h:outputStylesheet library="css" name="odontograma.css" />
+    <h:outputScript library="js" name="odontograma.js" />
+    
+    <div class="odontograma-container">
+        <h3>Odontograma Dental</h3>
+        <p>Haga clic en cualquier diente para agregarlo a la tabla de hallazgos</p>
+        
+        <div style="overflow-x: auto; margin: 20px 0;">
+            <svg id="odontograma-svg" class="odontograma-svg" width="1200" height="600">
+                <text x="600" y="300" text-anchor="middle" font-size="18" fill="#999">
+                    Cargando odontograma...
+                </text>
+            </svg>
+        </div>
+        
+        <div class="controls-container">
+            <p:commandButton value="Actualizar Vista" 
+                onclick="initOdontograma(); return false;"
+                icon="pi pi-refresh" />
+            <p:commandButton value="Limpiar Selección" 
+                onclick="document.querySelectorAll('.tooth-selected').forEach(el => el.classList.remove('tooth-selected')); return false;"
+                icon="pi pi-times" style="margin-left: 10px;" />
+        </div>
+    </div>
+    
+</ui:composition>

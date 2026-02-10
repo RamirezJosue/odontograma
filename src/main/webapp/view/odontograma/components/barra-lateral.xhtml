@@ -1,0 +1,22 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <div style="width:60px; padding:5px;">
+
+        <p:commandButton icon="pi pi-file"
+                         type="button"
+                         value="Presupuesto"
+                         onclick="PF('dlgPresupuesto').show();"/>
+
+        <br/><br/>
+
+        <p:commandButton icon="pi pi-wallet"
+                         type="button"
+                         value="Cobros"
+                         onclick="PF('dlgCobros').show();"/>
+
+    </div>
+
+</ui:composition>
