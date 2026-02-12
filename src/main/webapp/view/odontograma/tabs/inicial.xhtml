@@ -1,87 +1,269 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
+    <!-- Estilos CSS integrados -->
+    <h:outputStylesheet>
+        .odontograma-flex {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .flex-left, .flex-right {
+            width: 48%;
+        }
+        
+        .hallazgos {
+            margin-bottom: 2rem;
+        }
+        
+        .registro-hallazgos-table {
+            width: 100%;
+        }
+        
+        /* Estilos para la sección de evaluación */
+        .evaluacion-section {
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .evaluacion-fieldset {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        
+        .evaluacion-combo-container {
+            margin-bottom: 20px;
+        }
+        
+        .evaluacion-combo-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .evaluacion-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .evaluacion-superior,
+        .evaluacion-inferior {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .evaluacion-subsection {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .evaluacion-subsection label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .evaluacion-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .odontograma-flex {
+                flex-direction: column;
+            }
+            
+            .flex-left, .flex-right {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .evaluacion-superior,
+            .evaluacion-inferior {
+                flex-direction: column;
+            }
+        }
+    </h:outputStylesheet>
 
-	<!-- OPCIONES -->
-	<div class="odontograma-flex">
-		<h:outputStylesheet>
-		    .odontograma-flex {
-		        display: flex;
-		        justify-content: space-between;
-		    }
-		</h:outputStylesheet>
+    <!-- OPCIONES -->
+    <div class="odontograma-flex">
+        <!-- IZQUIERDA -->
+        <div class="flex-left">
+            <p:fieldset legend="Seleccione el Tipo de Dentición">
+                <p:selectManyCheckbox>
+                    <f:selectItem itemLabel="Dentición Mixta" itemValue="MIXTA" />
+                    <f:selectItem itemLabel="Dentición Permanente"
+                        itemValue="PERMANENTE" />
+                    <f:selectItem itemLabel="Dentición Decidua" itemValue="DECIDUA" />
+                </p:selectManyCheckbox>
+            </p:fieldset>
+        </div>
 
-		<!-- IZQUIERDA -->
-		<div class="flex-left">
-			<p:fieldset legend="Seleccione el Tipo de Dentición">
-				<p:selectManyCheckbox>
-					<f:selectItem itemLabel="Dentición Mixta" itemValue="MIXTA" />
-					<f:selectItem itemLabel="Dentición Permanente"
-						itemValue="PERMANENTE" />
-					<f:selectItem itemLabel="Dentición Decidua" itemValue="DECIDUA" />
-				</p:selectManyCheckbox>
-			</p:fieldset>
-		</div>
+        <!-- DERECHA -->
+        <div class="flex-right">
+            <p:fieldset legend="Seleccione la Fecha de Creación">
+                <p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
+            </p:fieldset>
+        </div>
+    </div>
 
-		<!-- DERECHA -->
-		<div class="flex-right">
-			<p:fieldset legend="Seleccione la Fecha de Creación">
-				<p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
-			</p:fieldset>
-		</div>
+    <div style="margin: 3rem; text-align: center;">
+        <h:outputText value="Odontograma Inicial (pendiente diseño)" 
+            style="font-size: 18px; font-weight: bold; color: #333;" />
+    </div>
 
-	</div>
+    <!-- SECCIÓN DE HALLAZGOS -->
+    <div class="hallazgos">
+        <p:fieldset legend="Registro de Hallazgos">
+            <h:form id="formHallazgos">
+                <p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
+                    styleClass="registro-hallazgos-table" editable="true">
+                    
+                    <p:column headerText="N° Pieza Dental">
+                        <h:outputText value="#{h.piezaDental}" />
+                    </p:column>
 
-	<div style="margin: 5rem;">
-		<h:outputText value="Odontograma Inicial (pendiente diseño)" />
-	</div>
+                    <p:column headerText="Hallazgo">
+                        <h:outputText value="#{h.descripcion}" />
+                    </p:column>
 
-	<div class="flex-right">
-		<p:fieldset legend="Registro de Hallazgos">
-			<h:form id="formHallazgos">
+                    <p:column headerText="Cantidad">
+                        <h:outputText value="#{h.cantidad}" />
+                    </p:column>
 
-				<p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
-					styleClass="registro-hallazgos-table" editable="true">				
+                    <p:column headerText="Nota">
+                        <p:inputTextarea value="#{h.nota}" autoResize="true" />
+                    </p:column>
+                </p:dataTable>
 
-					<p:column headerText="N° Pieza Dental">
-						<h:outputText value="#{h.piezaDental}" />
-					</p:column>
+                <br />
 
-					<p:column headerText="Hallazgo">
-						<h:outputText value="#{h.descripcion}" />
-					</p:column>
+                <p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
+                    action="#{odontogramaBean.adicionarHallazgo}"
+                    update="formHallazgos" />
 
-					<p:column headerText="Cantidad">
-						<h:outputText value="#{h.cantidad}" minValue="1" />
-					</p:column>
+                <h:panelGroup style="margin-left:20px">
+                    <strong>Total:</strong> #{odontogramaBean.totalHallazgos}
+                </h:panelGroup>
+            </h:form>
+        </p:fieldset>
+    </div>
 
-					<p:column headerText="Nota">
-						<p:inputTextarea value="#{h.nota}" autoResize="true" />
-					</p:column>
-
-				</p:dataTable>
-
-				<br />
-
-				<p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
-					action="#{odontogramaBean.adicionarHallazgo}"
-					update="formHallazgos" />
-
-				<h:panelGroup style="margin-left:20px">
-					<strong>Total:</strong> #{odontogramaBean.totalHallazgos}
-    </h:panelGroup>
-
-			</h:form>
-
-		</p:fieldset>
-	</div>	
-
-
-
+    <!-- SECCIÓN DE EVALUACIÓN ODONTOLÓGICA (NUEVA) -->
+    <div class="evaluacion-section">
+        <p:fieldset legend="Evaluación Odontológica" styleClass="evaluacion-fieldset">
+            
+            <!-- Nueva Sección con Combo Box para Diagnóstico CIE-10 -->
+            <div class="evaluacion-combo-container">
+                <h:outputLabel for="diagnosticoCombo" value="Seleccione Diagnóstico CIE-10:" />
+                <p:selectOneMenu id="diagnosticoCombo" 
+                    styleClass="evaluacion-combo"
+                    filter="true" 
+                    filterMatchMode="contains"
+                    panelStyle="width:400px">
+                    
+                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
+                    <f:selectItem itemLabel="K02 - Caries dental" itemValue="K02" />
+                    <f:selectItem itemLabel="K03 - Otras enfermedades de los tejidos dentales duros" itemValue="K03" />
+                    <f:selectItem itemLabel="K04 - Enfermedades de la pulpa y de los tejidos periapicales" itemValue="K04" />
+                    <f:selectItem itemLabel="K05 - Gingivitis y enfermedades periodontales" itemValue="K05" />
+                    <f:selectItem itemLabel="K06 - Otros trastornos de la encía y de la zona edéntula" itemValue="K06" />
+                    <f:selectItem itemLabel="K07 - Anomalías dentofaciales" itemValue="K07" />
+                    <f:selectItem itemLabel="K08 - Otros trastornos de los dientes y de sus estructuras de sostén" itemValue="K08" />
+                    <f:selectItem itemLabel="K09 - Quistes de la región bucal" itemValue="K09" />
+                    <f:selectItem itemLabel="K10 - Otros trastornos de los maxilares" itemValue="K10" />
+                    <f:selectItem itemLabel="K11 - Enfermedades de las glándulas salivales" itemValue="K11" />
+                    <f:selectItem itemLabel="K12 - Estomatitis y lesiones afines" itemValue="K12" />
+                    <f:selectItem itemLabel="K13 - Otras enfermedades del labio y de la mucosa bucal" itemValue="K13" />
+                    <f:selectItem itemLabel="K14 - Enfermedades de la lengua" itemValue="K14" />
+                </p:selectOneMenu>
+            </div>
+            
+            <!-- Contenedor de las subsecciones -->
+            <div class="evaluacion-container">
+                
+                <!-- Sección Superior -->
+                <div class="evaluacion-superior">
+                    <div class="evaluacion-subsection">
+                        <h:outputLabel for="especificaciones" value="Especificaciones:" />
+                        <p:inputTextarea id="especificaciones" 
+                            rows="5" 
+                            cols="50"
+                            autoResize="true"
+                            placeholder="Ingrese las especificaciones..."
+                            styleClass="evaluacion-textarea" />
+                    </div>
+                    
+                    <div class="evaluacion-subsection">
+                        <h:outputLabel for="diagnostico" value="Diagnóstico:" />
+                        <p:inputTextarea id="diagnostico" 
+                            rows="5" 
+                            cols="50"
+                            autoResize="true"
+                            placeholder="Ingrese el diagnóstico del paciente..."
+                            styleClass="evaluacion-textarea" />
+                    </div>
+                </div>
+                
+                <!-- Sección Inferior -->
+                <div class="evaluacion-inferior">
+                    <div class="evaluacion-subsection">
+                        <h:outputLabel for="observaciones" value="Observaciones:" />
+                        <p:inputTextarea id="observaciones" 
+                            rows="5" 
+                            cols="50"
+                            autoResize="true"
+                            placeholder="Ingrese sus observaciones..."
+                            styleClass="evaluacion-textarea" />
+                    </div>
+                    
+                    <div class="evaluacion-subsection">
+                        <h:outputLabel for="planTrabajo" value="Plan de Trabajo:" />
+                        <p:inputTextarea id="planTrabajo" 
+                            rows="5" 
+                            cols="50"
+                            autoResize="true"
+                            placeholder="Ingrese el plan de trabajo..."
+                            styleClass="evaluacion-textarea" />
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botones de acción (solo visual) -->
+            <div style="margin-top: 20px; text-align: right;">
+                <p:commandButton value="Guardar Evaluación" 
+                    icon="pi pi-save"
+                    styleClass="ui-button-success" 
+                    disabled="true" />
+                
+                <p:commandButton value="Limpiar" 
+                    icon="pi pi-trash"
+                    styleClass="ui-button-secondary"
+                    style="margin-left: 10px;"
+                    disabled="true" />
+                
+                <p:commandButton value="Imprimir" 
+                    icon="pi pi-print"
+                    style="margin-left: 10px;"
+                    disabled="true" />
+            </div>
+            
+        </p:fieldset>
+    </div>
 
 </ui:composition>
-
-
