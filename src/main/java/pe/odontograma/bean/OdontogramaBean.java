@@ -13,12 +13,13 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class OdontogramaBean implements Serializable {
+	
+	private String tipoDenticion = "mixta"; 
     
     private static final long serialVersionUID = 1L;
     
     private List<Hallazgo> hallazgos;
     private Hallazgo hallazgoSeleccionado;
-    private String tipoDenticion = "permanente";
     private Date fechaCreacion = new Date();
     
     @PostConstruct

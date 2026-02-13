@@ -103,16 +103,22 @@
     <!-- OPCIONES -->
     <div class="odontograma-flex">
         <!-- IZQUIERDA -->
-        <div class="flex-left">
-            <p:fieldset legend="Seleccione el Tipo de Dentición">
-                <p:selectManyCheckbox>
-                    <f:selectItem itemLabel="Dentición Mixta" itemValue="MIXTA" />
-                    <f:selectItem itemLabel="Dentición Permanente"
-                        itemValue="PERMANENTE" />
-                    <f:selectItem itemLabel="Dentición Decidua" itemValue="DECIDUA" />
-                </p:selectManyCheckbox>
-            </p:fieldset>
-        </div>
+		<div class="flex-left">
+		    <h:form id="formDenticion">
+		        <p:fieldset legend="Seleccione el Tipo de Dentición">
+					<p:selectOneRadio id="denticionRadio"
+					                  value="#{odontogramaBean.tipoDenticion}"
+					                  onchange="tipoDenticion = this.value; actualizarOdontograma();">
+					
+					    <f:selectItem itemLabel="Dentición Mixta" itemValue="mixta" />
+					    <f:selectItem itemLabel="Dentición Permanente" itemValue="permanente" />
+					    <f:selectItem itemLabel="Dentición Decidua" itemValue="decidua" />
+					
+					</p:selectOneRadio>
+		        </p:fieldset>
+		    </h:form>
+		</div>
+
 
         <!-- DERECHA -->
         <div class="flex-right">
@@ -122,9 +128,10 @@
         </div>
     </div>
 
-    <div style="margin: 3rem; text-align: center;">
-        <h:outputText value="Odontograma Inicial (pendiente diseño)" 
-            style="font-size: 18px; font-weight: bold; color: #333;" />
+    <div style="margin: 2rem 0; text-align: center; overflow-x: auto;">
+        <svg id="odontograma" preserveAspectRatio="xMidYMid meet"
+             style="border: 1px solid #ddd; background: white; display: block; margin: 0 auto;">
+        </svg>
     </div>
 
     <!-- SECCIÓN DE HALLAZGOS -->
@@ -265,5 +272,4 @@
             
         </p:fieldset>
     </div>
-
 </ui:composition>

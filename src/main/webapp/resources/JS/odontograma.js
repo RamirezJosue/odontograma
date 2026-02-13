@@ -1,263 +1,547 @@
-/**
- * Odontograma Dental - Funciones principales
- */
+const svg = document.getElementById("odontograma");
+// Variable global para dentición - se sincroniza con PrimeFaces
+var tipoDenticion = "mixta";
 
-// Configuración
 const CONFIG = {
-    toothWidth: 60,
-    toothHeight: 80,
-    spacing: 10,
-    svgWidth: 1200,
-    colors: {
-        normal: 'white',
-        hover: '#e8f4f8',
-        selected: '#b3e0ff',
-        stroke: '#333',
-        selectedStroke: '#0066cc'
+  STROKE_WIDTH: 0.5,
+  DIENTE: { alto: 58 },
+  ESPACIADO: {
+    inicioY: 10,
+    anchoSVG: 1200,
+    vertical: {
+      mixta: [170, 250, 170, 250],
+      permanente: 270,
+      decidua: 270,
+      default: 270
     }
+  }
 };
 
-// Datos de dientes por tipo de dentición
-const DENTICION_DATA = {
-    mixta: [
-        { teeth: [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28], y: 50, isUpper: true },
-        { teeth: [55,54,53,52,51,61,62,63,64,65], y: 200, isUpper: true },
-        { teeth: [85,84,83,82,81,71,72,73,74,75], y: 350, isUpper: false },
-        { teeth: [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38], y: 500, isUpper: false }
-    ],
-    permanente: [
-        { teeth: [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28], y: 150, isUpper: true },
-        { teeth: [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38], y: 450, isUpper: false }
-    ],
-    decidua: [
-        { teeth: [55,54,53,52,51,61,62,63,64,65], y: 150, isUpper: true },
-        { teeth: [85,84,83,82,81,71,72,73,74,75], y: 450, isUpper: false }
-    ]
+const FILAS_POR_DENTICION = {
+  mixta: [
+    [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28],
+    [55,54,53,52,51,61,62,63,64,65],
+    [85,84,83,82,81,71,72,73,74,75],
+    [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38]
+  ],
+  permanente: [
+    [18,17,16,15,14,13,12,11,21,22,23,24,25,26,27,28],
+    [48,47,46,45,44,43,42,41,31,32,33,34,35,36,37,38]
+  ],
+  decidua: [
+    [55,54,53,52,51,61,62,63,64,65],
+    [85,84,83,82,81,71,72,73,74,75]
+  ]
 };
 
-/**
- * Inicializa el odontograma
- */
-function initOdontograma() {
-    console.log('Inicializando odontograma...');
+const REGLAS_DIENTES = {
+  molarSup:   { nums: [18,17,16,26,27,28], fn: null, ancho: 54 },
+  premSup:    { nums: [15,25], fn: null, ancho: 54 },
+  bicSup:     { nums: [14,24], fn: null, ancho: 54 },
+  premInf:    { nums: [45,44,35,34], fn: null, ancho: 54 },
+  mol46:      { nums: [46], fn: null, ancho: 54 },
+  mol36:      { nums: [36], fn: null, ancho: 54 },
+  molInf:     { nums: [48,47,37,38], fn: null, ancho: 54 },
+  molTempSup: { nums: [55,65], fn: null, ancho: 54 },
+  molTempSupsin: { nums: [54,64], fn: null, ancho: 54 },
+  mol85_75:   { nums: [85,75], fn: null, ancho: 54 },
+  mol84_74:   { nums: [84,74], fn: null, ancho: 54 },
+  incSup:     { nums: [13,12,11,21,22,23], fn: null, ancho: 45 },
+  incInf:     { nums: [43,42,41,31,32,33], fn: null, ancho: 45 },
+  incTempSup: { nums: [53,52,51,61,62,63], fn: null, ancho: 45 },
+  incTempInf: { nums: [83,73,82,72,81,71], fn: null, ancho: 45 }
+};
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+const mapaDientes = {};
+
+const FILAS_INFERIORES = {
+  mixta: [2, 3],
+  permanente: [1],
+  decidua: [1]
+};
+
+function obtenerAnchoDiente(n) {
+  for (var k in REGLAS_DIENTES) {
+    if (REGLAS_DIENTES[k].nums.indexOf(n) !== -1) {
+      return REGLAS_DIENTES[k].ancho;
+    }
+  }
+  return 54;
+}
+
+function crearElemento(tipo, attrs) {
+  var el = document.createElementNS(SVG_NS, tipo);
+  if (attrs) {
+    for (var k in attrs) {
+      if (attrs.hasOwnProperty(k)) {
+        el.setAttribute(k, attrs[k]);
+      }
+    }
+  }
+  return el;
+}
+
+function crearGrupo(x, y) {
+  return crearElemento("g", { transform: "translate(" + x + ", " + y + ") scale(0.7)" });
+}
+
+var GROSOR_CAJA = CONFIG.STROKE_WIDTH;
+var GROSOR_DIENTE = CONFIG.STROKE_WIDTH / 0.7;
+
+function crearLinea(g, x1, y1, x2, y2) {
+  var line = crearElemento("line", {
+    x1: x1, y1: y1, x2: x2, y2: y2,
+    stroke: "black",
+    "stroke-width": GROSOR_DIENTE
+  });
+  g.appendChild(line);
+  return line;
+}
+
+function aplicarEventosCajon(el) {
+  if (el.dataset.clickableCajon) return;
+  el.dataset.clickableCajon = "true";
+  el.style.cursor = "pointer";
+  el.style.transition = "fill 0.2s ease";
+  
+  el.addEventListener("click", function(e) {
+    e.stopPropagation();
+    var texto = prompt("Ingrese texto (máximo 3 letras):", "");
+    if (!texto) return;
     
-    const svg = document.getElementById('odontograma-svg');
-    if (!svg) {
-        console.error('Elemento SVG no encontrado');
-        return;
+    var textoLimitado = texto.substring(0, 3).toUpperCase();
+    var parent = el.parentNode;
+    var x = parseFloat(el.getAttribute("x"));
+    var y = parseFloat(el.getAttribute("y"));
+    var ancho = parseFloat(el.getAttribute("width"));
+    var alto = parseFloat(el.getAttribute("height"));
+    
+    var oldText = parent.querySelector("[data-cajon-text=\"" + el.dataset.cajonId + "\"]");
+    if (oldText) oldText.remove();
+    
+    var textEl = crearElemento("text", {
+      x: x + ancho / 2,
+      y: y + alto / 2 + 4,
+      "text-anchor": "middle",
+      "dominant-baseline": "middle",
+      "font-size": "14px",
+      "font-weight": "bold",
+      "font-family": "Arial, sans-serif",
+      fill: "#333",
+      "data-cajon-text": el.dataset.cajonId
+    });
+    textEl.textContent = textoLimitado;
+    parent.appendChild(textEl);
+  });
+}
+
+function aplicarEventosSuperficie(el) {
+  if (el.dataset.clickable) return;
+  
+  el.dataset.clickable = "true";
+  el.style.cursor = "pointer";
+  el.style.transition = "fill 0.2s ease";
+  
+  el.addEventListener("mouseenter", function() {
+    if (!el.dataset.usuarioColor) {
+      el.dataset.originalFill = el.getAttribute("fill") || "white";
+      el.setAttribute("fill", "#f0f0f0");
+    }
+  });
+  
+  el.addEventListener("mouseleave", function() {
+    if (!el.dataset.usuarioColor) {
+      el.setAttribute("fill", el.dataset.originalFill || "white");
+    }
+  });
+  
+  el.addEventListener("click", function(e) {
+    e.stopPropagation();
+    var color = prompt("Color para esta superficie:", "");
+    if (!color) return;
+    
+    el.setAttribute("fill", color);
+    el.dataset.usuarioColor = color;
+    el.dataset.originalFill = color;
+  });
+}
+
+function crearSuperficie(g, tipo, attrs) {
+  var attrsCompletos = {};
+  for (var k in attrs) {
+    if (attrs.hasOwnProperty(k)) {
+      attrsCompletos[k] = attrs[k];
+    }
+  }
+  attrsCompletos.stroke = "black";
+  attrsCompletos.fill = "white";
+  attrsCompletos["stroke-width"] = GROSOR_DIENTE;
+  
+  var el = crearElemento(tipo, attrsCompletos);
+  aplicarEventosSuperficie(el);
+  g.appendChild(el);
+  return el;
+}
+
+var s = crearSuperficie;
+var l = crearLinea;
+
+function crearMolar(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "25,45 40,5 55,45" });
+  s(g, "polygon", { points: "55,45 70,5 85,45" });
+  s(g, "polygon", { points: "47.5,25 55,5 62.5,25 55,45" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "40,55 70,55 85,45 25,45" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 55, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 15, height: 12.5 });
+  s(g, "rect", { x: 55, y: 67.5, width: 15, height: 12.5 });
+  l(g, 55, 55, 55, 80);
+  l(g, 40, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearMolarCentroMixto(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "25,45 40,5 55,45" });
+  s(g, "polygon", { points: "55,45 70,5 85,45" });
+  s(g, "polygon", { points: "47.5,25 55,5 62.5,25 55,45" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "40,55 70,55 85,45 25,45" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 55, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 30, height: 12.5 });
+  l(g, 55, 55, 55, 67.5);
+  l(g, 40, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearPremolar(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "40,45 55,5 70,45 55,45" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 85,45 70,55 40,55" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 30, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 30, height: 12.5 });
+  l(g, 40, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearBicuspideSuperior(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "50,45 65,5 80,45" });
+  s(g, "polygon", { points: "30,45 45,5 60,45" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 40,55 70,55 85,45" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 30, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 30, height: 12.5 });
+  l(g, 40, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearIncisivoSuperior(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "26,45 48,5 69.1,45" });
+  s(g, "polygon", { points: "25,45 38.2,67.8 38.5,67 25,90" });
+  s(g, "polygon", { points: "70,45 58,68 58,67 70,90" });
+  s(g, "polygon", { points: "25,45 70,45 58,68 38.2,67.8" });
+  s(g, "polygon", { points: "25,90 38.5,67 58,67 70,90" });
+  l(g, 38, 67.5, 58, 67.5);
+  
+  g.centroOffset = 33.25;
+  return g;
+}
+
+function crearMolarInferior46(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "25,90 40,135 55,90" });
+  s(g, "polygon", { points: "55,90 70,135 85,90" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 85,45 70,55 40,55" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 8, height: 25 });
+  s(g, "rect", { x: 48, y: 55, width: 11, height: 12.5 });
+  s(g, "rect", { x: 48, y: 67.5, width: 11, height: 12.5 });
+  s(g, "rect", { x: 59, y: 55, width: 11, height: 12.5 });
+  s(g, "rect", { x: 59, y: 67.5, width: 11, height: 12.5 });
+  l(g, 48, 55, 48, 80);
+  l(g, 59, 55, 59, 80);
+  l(g, 48, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearMolarInferior36(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "25,90 40,135 55,90" });
+  s(g, "polygon", { points: "55,90 70,135 85,90" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 85,45 70,55 40,55" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 11, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 11, height: 12.5 });
+  s(g, "rect", { x: 51, y: 55, width: 11, height: 12.5 });
+  s(g, "rect", { x: 51, y: 67.5, width: 11, height: 12.5 });
+  s(g, "rect", { x: 62, y: 55, width: 8, height: 25 });
+  l(g, 51, 55, 51, 80);
+  l(g, 62, 55, 62, 80);
+  l(g, 40, 67.5, 62, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearPremolarInferior(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "40,90 55,135 70,90 55,90" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 85,45 70,55 40,55" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 30, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 30, height: 12.5 });
+  l(g, 40, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearIncisivoInferior(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "26,90 48,135 69.1,90" });
+  s(g, "polygon", { points: "25,45 70,45 58,68 38.2,67.8" });
+  s(g, "polygon", { points: "25,45 38.2,67.8 38.5,67 25,90" });
+  s(g, "polygon", { points: "70,45 58,68 58,67 70,90" });
+  s(g, "polygon", { points: "25,90 38.5,67 58,67 70,90" });
+  l(g, 38, 67.5, 58, 67.5);
+  
+  g.centroOffset = 33.25;
+  return g;
+}
+
+function crearMolar85_75(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "25,90 40,135 55,90" });
+  s(g, "polygon", { points: "55,90 70,135 85,90" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 40,55 70,55 85,45" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 55, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 8, height: 12.5 });
+  s(g, "rect", { x: 48, y: 67.5, width: 14, height: 12.5 });
+  s(g, "rect", { x: 62, y: 67.5, width: 8, height: 12.5 });
+  l(g, 55, 55, 55, 68);
+  l(g, 40, 67.5, 70, 67.5);
+  l(g, 48, 67.5, 48, 80);
+  l(g, 62, 67.5, 62, 80);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+function crearMolarInferiorPermanente(x, y) {
+  var g = crearGrupo(x, y);
+  
+  s(g, "polygon", { points: "25,90 40,135 55,90" });
+  s(g, "polygon", { points: "55,90 70,135 85,90" });
+  s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
+  s(g, "polygon", { points: "70,55 85,45 85,90 70,80" });
+  s(g, "polygon", { points: "25,45 40,55 70,55 85,45" });
+  s(g, "polygon", { points: "25,90 40,80 70,80 85,90" });
+  s(g, "rect", { x: 40, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 55, y: 55, width: 15, height: 12.5 });
+  s(g, "rect", { x: 40, y: 67.5, width: 15, height: 12.5 });
+  s(g, "rect", { x: 55, y: 67.5, width: 15, height: 12.5 });
+  l(g, 55, 55, 55, 80);
+  l(g, 40, 67.5, 70, 67.5);
+  
+  g.centroOffset = 38.5;
+  return g;
+}
+
+// Asignar funciones a las reglas
+REGLAS_DIENTES.molarSup.fn = crearMolar;
+REGLAS_DIENTES.premSup.fn = crearPremolar;
+REGLAS_DIENTES.bicSup.fn = crearBicuspideSuperior;
+REGLAS_DIENTES.premInf.fn = crearPremolarInferior;
+REGLAS_DIENTES.mol46.fn = crearMolarInferior46;
+REGLAS_DIENTES.mol36.fn = crearMolarInferior36;
+REGLAS_DIENTES.molInf.fn = crearMolarInferiorPermanente;
+REGLAS_DIENTES.molTempSup.fn = crearMolar;
+REGLAS_DIENTES.molTempSupsin.fn = crearMolarCentroMixto;
+REGLAS_DIENTES.mol85_75.fn = crearMolar85_75;
+REGLAS_DIENTES.mol84_74.fn = crearMolarInferiorPermanente;
+REGLAS_DIENTES.incSup.fn = crearIncisivoSuperior;
+REGLAS_DIENTES.incInf.fn = crearIncisivoInferior;
+REGLAS_DIENTES.incTempSup.fn = crearIncisivoSuperior;
+REGLAS_DIENTES.incTempInf.fn = crearIncisivoInferior;
+
+// ELIMINADO: Event listener de radio buttons - AHORA LO MANEJA PRIMEFACES
+// document.addEventListener('DOMContentLoaded', function() { ... });
+
+function obtenerEspaciadoVertical(i) {
+  var v = CONFIG.ESPACIADO.vertical;
+  if (tipoDenticion === "mixta" && v.mixta instanceof Array) {
+    return v.mixta[i] !== undefined ? v.mixta[i] : v.default;
+  }
+  return v[tipoDenticion] !== undefined ? v[tipoDenticion] : v.default;
+}
+
+function calcularAltoTotal(filas) {
+  var a = CONFIG.ESPACIADO.inicioY;
+  for (var i = 0; i < filas.length; i++) {
+    a += CONFIG.DIENTE.alto;
+    if (i < filas.length - 1) {
+      a += obtenerEspaciadoVertical(i);
+    }
+  }
+  var inf = FILAS_INFERIORES[tipoDenticion];
+  if (inf && inf.indexOf(filas.length - 1) !== -1) {
+    a += 30;
+  } else {
+    a += 40;
+  }
+  return a;
+}
+
+function actualizarOdontograma() {
+  // Verificar que el SVG existe
+  if (!svg) {
+    console.error("SVG no encontrado");
+    return;
+  }
+  
+  while (svg.firstChild) {
+    svg.removeChild(svg.firstChild);
+  }
+  
+  var filas = FILAS_POR_DENTICION[tipoDenticion];
+  svg.setAttribute("viewBox", "0 0 1200 " + calcularAltoTotal(filas));
+  
+  for (var k in mapaDientes) {
+    delete mapaDientes[k];
+  }
+  
+  for (var k2 in REGLAS_DIENTES) {
+    var regla = REGLAS_DIENTES[k2];
+    for (var i = 0; i < regla.nums.length; i++) {
+      mapaDientes[regla.nums[i]] = regla.fn;
+    }
+  }
+  
+  function esInferior(i) {
+    var inf = FILAS_INFERIORES[tipoDenticion];
+    return inf ? inf.indexOf(i) !== -1 : false;
+  }
+  
+  var y = CONFIG.ESPACIADO.inicioY;
+  
+  for (var idx = 0; idx < filas.length; idx++) {
+    var fila = filas[idx];
+    var anchoTotal = 0;
+    for (var i = 0; i < fila.length; i++) {
+      anchoTotal += obtenerAnchoDiente(fila[i]);
+    }
+    var inicioX = (CONFIG.ESPACIADO.anchoSVG - anchoTotal) / 2;
+    var x = inicioX;
+    var inf = esInferior(idx);
+    
+    for (var i2 = 0; i2 < fila.length; i2++) {
+      var num = fila[i2];
+      var w = obtenerAnchoDiente(num);
+      var id = num + "_" + idx + "_" + i2;
+      
+      var caja = crearElemento("rect", {
+        x: x, y: y,
+        width: w,
+        height: CONFIG.DIENTE.alto,
+        fill: "white",
+        stroke: "black",
+        "stroke-width": GROSOR_CAJA,
+        "data-cajon-id": id
+      });
+      aplicarEventosCajon(caja);
+      svg.appendChild(caja);
+      
+      var etiqY = inf ? y - 8 : y + CONFIG.DIENTE.alto + 18;
+      var fontSize = w === 45 ? "10px" : "11px";
+      
+      var etiq = crearElemento("text", {
+        x: x + w / 2,
+        y: etiqY,
+        "text-anchor": "middle",
+        "font-size": fontSize,
+        "font-weight": "bold",
+        "font-family": "Arial, sans-serif",
+        fill: "#333"
+      });
+      etiq.textContent = num;
+      svg.appendChild(etiq);
+      
+      var fn = mapaDientes[num];
+      if (fn) {
+        var centro = x + w / 2;
+        var tmp = fn(0, 0);
+        var offset = tmp.centroOffset !== undefined ? tmp.centroOffset : 38.5;
+        var yPos = inf ? y - 125 : y + CONFIG.DIENTE.alto + 30;
+        svg.appendChild(fn(centro - offset, yPos));
+      }
+      
+      x += w;
     }
     
-    const tipo = getSelectedDenticion();
-    drawOdontograma(svg, tipo);
-    
-    // Agregar event listeners para cambios en los radios
-    document.querySelectorAll('input[name$="denticion"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            const newType = getSelectedDenticion();
-            drawOdontograma(svg, newType);
-        });
-    });
-}
-
-/**
- * Obtiene el tipo de dentición seleccionado
- */
-function getSelectedDenticion() {
-    const radios = document.querySelectorAll('input[name$="denticion"]:checked');
-    return radios.length > 0 ? radios[0].value : 'permanente';
-}
-
-/**
- * Dibuja el odontograma completo
- */
-function drawOdontograma(svg, tipo) {
-    // Limpiar SVG
-    while (svg.firstChild) {
-        svg.removeChild(svg.firstChild);
+    if (idx < filas.length - 1) {
+      y += obtenerEspaciadoVertical(idx);
     }
-    
-    // Configurar tamaño
-    const rows = DENTICION_DATA[tipo] || DENTICION_DATA.permanente;
-    const svgHeight = tipo === 'mixta' ? 800 : 600;
-    
-    svg.setAttribute('viewBox', `0 0 ${CONFIG.svgWidth} ${svgHeight}`);
-    svg.setAttribute('height', svgHeight);
-    
-    // Dibujar cada fila
-    rows.forEach(row => {
-        drawToothRow(svg, row.teeth, row.y, row.isUpper);
-    });
-    
-    console.log(`Odontograma ${tipo} dibujado`);
+  }
 }
 
-/**
- * Dibuja una fila de dientes
- */
-function drawToothRow(svg, teeth, y, isUpper) {
-    const totalWidth = teeth.length * (CONFIG.toothWidth + CONFIG.spacing) - CONFIG.spacing;
-    const startX = (CONFIG.svgWidth - totalWidth) / 2;
-    
-    teeth.forEach((toothNumber, index) => {
-        const x = startX + index * (CONFIG.toothWidth + CONFIG.spacing);
-        
-        // Dibujar diente
-        drawTooth(svg, toothNumber, x, y, isUpper);
-    });
+function iniciar() {
+  if (!svg) {
+    console.log("Esperando al SVG...");
+    setTimeout(iniciar, 100);
+    return;
+  }
+  actualizarOdontograma();
 }
 
-/**
- * Dibuja un diente individual
- */
-function drawTooth(svg, toothNumber, x, y, isUpper) {
-    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    group.setAttribute('class', 'tooth-group');
-    group.setAttribute('data-tooth', toothNumber);
-    
-    // Rectángulo base (clickeable)
-    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('x', x);
-    rect.setAttribute('y', y);
-    rect.setAttribute('width', CONFIG.toothWidth);
-    rect.setAttribute('height', CONFIG.toothHeight);
-    rect.setAttribute('class', 'tooth-rect');
-    rect.setAttribute('data-tooth', toothNumber);
-    
-    rect.addEventListener('click', () => selectTooth(toothNumber));
-    rect.addEventListener('mouseover', () => {
-        rect.style.fill = CONFIG.colors.hover;
-    });
-    rect.addEventListener('mouseout', () => {
-        if (!rect.classList.contains('tooth-selected')) {
-            rect.style.fill = CONFIG.colors.normal;
-        }
-    });
-    
-    group.appendChild(rect);
-    
-    // Etiqueta con número
-    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    label.setAttribute('x', x + CONFIG.toothWidth / 2);
-    label.setAttribute('y', isUpper ? y + CONFIG.toothHeight + 20 : y - 10);
-    label.setAttribute('text-anchor', 'middle');
-    label.setAttribute('class', 'tooth-label');
-    label.setAttribute('data-tooth', toothNumber);
-    label.textContent = toothNumber;
-    
-    label.addEventListener('click', () => selectTooth(toothNumber));
-    
-    group.appendChild(label);
-    
-    // Forma del diente
-    drawToothShape(group, toothNumber, x, y, isUpper);
-    
-    svg.appendChild(group);
-}
-
-/**
- * Dibuja la forma específica del diente
- */
-function drawToothShape(group, toothNumber, x, y, isUpper) {
-    const shape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    shape.setAttribute('class', 'tooth-shape');
-    
-    let path = '';
-    const centerX = x + CONFIG.toothWidth / 2;
-    const centerY = y + CONFIG.toothHeight / 2;
-    
-    // Diferentes formas según tipo de diente
-    if ((toothNumber >= 16 && toothNumber <= 18) || 
-        (toothNumber >= 26 && toothNumber <= 28) ||
-        (toothNumber >= 36 && toothNumber <= 38) || 
-        (toothNumber >= 46 && toothNumber <= 48)) {
-        // Molares
-        path = `M ${x + 10} ${y + 10} 
-                L ${centerX} ${isUpper ? y + 20 : y + CONFIG.toothHeight - 20} 
-                L ${x + CONFIG.toothWidth - 10} ${y + 10}
-                L ${centerX} ${isUpper ? y + CONFIG.toothHeight - 20 : y + 20} Z`;
-    } else if ((toothNumber >= 11 && toothNumber <= 15) || 
-               (toothNumber >= 21 && toothNumber <= 25) ||
-               (toothNumber >= 31 && toothNumber <= 35) || 
-               (toothNumber >= 41 && toothNumber <= 45)) {
-        // Premolares e incisivos
-        path = `M ${x + 15} ${y + 5} 
-                L ${x + CONFIG.toothWidth - 15} ${y + 5}
-                L ${x + CONFIG.toothWidth - 5} ${y + CONFIG.toothHeight - 5}
-                L ${x + 5} ${y + CONFIG.toothHeight - 5} Z`;
-    } else {
-        // Temporales u otros
-        path = `M ${x + 10} ${y + 10} 
-                L ${x + CONFIG.toothWidth - 10} ${y + 10}
-                L ${x + CONFIG.toothWidth - 10} ${y + CONFIG.toothHeight - 10}
-                L ${x + 10} ${y + CONFIG.toothHeight - 10} Z`;
-    }
-    
-    shape.setAttribute('d', path);
-    group.appendChild(shape);
-}
-
-/**
- * Maneja la selección de un diente
- */
-function selectTooth(toothNumber) {
-    console.log(`Diente seleccionado: ${toothNumber}`);
-    
-    // Remover selección anterior
-    document.querySelectorAll('.tooth-selected').forEach(el => {
-        el.classList.remove('tooth-selected');
-        el.style.fill = CONFIG.colors.normal;
-    });
-    
-    // Aplicar nueva selección
-    document.querySelectorAll(`[data-tooth="${toothNumber}"]`).forEach(el => {
-        if (el.tagName === 'rect') {
-            el.classList.add('tooth-selected');
-            el.style.fill = CONFIG.colors.selected;
-        }
-    });
-    
-    // Llamar a función de PrimeFaces para agregar a tabla
-    if (window.PF && PF('agregarHallazgoBtn')) {
-        addToothToTable(toothNumber);
-    } else {
-        // Fallback
-        alert(`Diente ${toothNumber} seleccionado. Debería agregarse a la tabla.`);
-    }
-}
-
-/**
- * Agrega diente a la tabla via PrimeFaces
- */
-function addToothToTable(toothNumber) {
-    // Hacer clic en botón de agregar
-    PF('agregarHallazgoBtn').jq.click();
-    
-    // Esperar y llenar campo
-    setTimeout(() => {
-        const inputs = document.querySelectorAll('input[id*="piezaDental"]');
-        if (inputs.length > 0) {
-            const lastInput = inputs[inputs.length - 1];
-            lastInput.value = toothNumber;
-            
-            // Disparar eventos
-            lastInput.dispatchEvent(new Event('input', { bubbles: true }));
-            lastInput.dispatchEvent(new Event('change', { bubbles: true }));
-            
-            // Notificación
-            if (PF('growl')) {
-                PF('growl').show([{
-                    severity: 'info',
-                    summary: 'Diente agregado',
-                    detail: `Diente ${toothNumber} agregado a la tabla`
-                }]);
-            }
-        }
-    }, 300);
-}
-
-// Inicializar cuando el DOM esté listo
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initOdontograma);
+  document.addEventListener('DOMContentLoaded', iniciar);
 } else {
-    initOdontograma();
+  iniciar();
 }
+
+window.actualizarOdontograma = actualizarOdontograma;
