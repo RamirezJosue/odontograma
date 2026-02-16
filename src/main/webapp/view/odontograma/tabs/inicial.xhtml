@@ -272,4 +272,36 @@
             
         </p:fieldset>
     </div>
+    
+    <h:form id="formDialogo">
+	    <p:dialog id="dlgSuperficie"
+	              widgetVar="dlgSuperficie"
+	              header="Seleccionar Color"
+	              modal="true"
+	              appendTo="@(body)"
+	              width="300">
+	
+	        <h:panelGrid columns="2" cellpadding="10">
+	
+	            <p:commandButton value="Rojo"
+	                style="background:#ff0000;color:white"
+	                onclick="aplicarColorSeleccionado('#ff0000');return false;" />
+	
+	            <p:commandButton value="Azul"
+	                style="background:#0000ff;color:white"
+	                onclick="aplicarColorSeleccionado('#0000ff');return false;" />
+	
+	            <p:commandButton value="Verde"
+	                style="background:#00ff00;color:white"
+	                onclick="aplicarColorSeleccionado('#00ff00');return false;" />
+	
+	            <p:commandButton value="Amarillo"
+	                style="background:#ffff00;color:black"
+	                onclick="aplicarColorSeleccionado('#ffff00');return false;" />
+	
+	        </h:panelGrid>
+	
+	    </p:dialog>
+	</h:form>
+    
 </ui:composition>

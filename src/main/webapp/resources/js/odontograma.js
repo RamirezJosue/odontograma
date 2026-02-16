@@ -82,8 +82,13 @@ function crearElemento(tipo, attrs) {
   return el;
 }
 
-function crearGrupo(x, y) {
-  return crearElemento("g", { transform: "translate(" + x + ", " + y + ") scale(0.7)" });
+// MODIFICADO: crearGrupo ahora acepta numDiente y asigna data-diente
+function crearGrupo(x, y, numDiente) {
+  var g = crearElemento("g", { transform: "translate(" + x + ", " + y + ") scale(0.7)" });
+  if (numDiente) {
+    g.setAttribute("data-diente", numDiente);
+  }
+  return g;
 }
 
 var GROSOR_CAJA = CONFIG.STROKE_WIDTH;
@@ -156,15 +161,42 @@ function aplicarEventosSuperficie(el) {
     }
   });
   
+  // MODIFICADO: Evento click para obtener el número del diente
   el.addEventListener("click", function(e) {
     e.stopPropagation();
-    var color = prompt("Color para esta superficie:", "");
-    if (!color) return;
     
-    el.setAttribute("fill", color);
-    el.dataset.usuarioColor = color;
-    el.dataset.originalFill = color;
+    // Obtener el grupo padre que contiene el data-diente
+    var g = el.closest("g");
+    var diente = null;
+    
+    if (g && g.dataset.diente) {
+      diente = g.dataset.diente;
+    } else {
+      // Fallback: intentar obtener del rectángulo contenedor
+      var rect = el.closest("rect");
+      if (rect && rect.dataset.cajonId) {
+        diente = rect.dataset.cajonId.split("_")[0];
+      }
+    }
+    
+    console.log("Diente seleccionado:", diente);
+    window.superficieSeleccionada = el;
+    window.dienteSeleccionado = diente;
+    PF('dlgSuperficie').show();
   });
+}
+
+function aplicarColorSeleccionado(color) {
+  if (!window.superficieSeleccionada) return;
+
+  var el = window.superficieSeleccionada;
+
+  el.setAttribute("fill", color);
+  el.dataset.usuarioColor = color;
+  el.dataset.originalFill = color;
+
+  // cerrar modal
+  PF('dlgSuperficie').hide();
 }
 
 function crearSuperficie(g, tipo, attrs) {
@@ -187,8 +219,9 @@ function crearSuperficie(g, tipo, attrs) {
 var s = crearSuperficie;
 var l = crearLinea;
 
-function crearMolar(x, y) {
-  var g = crearGrupo(x, y);
+// MODIFICADO: Todas las funciones ahora aceptan numDiente y lo pasan a crearGrupo
+function crearMolar(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "25,45 40,5 55,45" });
   s(g, "polygon", { points: "55,45 70,5 85,45" });
@@ -208,8 +241,8 @@ function crearMolar(x, y) {
   return g;
 }
 
-function crearMolarCentroMixto(x, y) {
-  var g = crearGrupo(x, y);
+function crearMolarCentroMixto(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "25,45 40,5 55,45" });
   s(g, "polygon", { points: "55,45 70,5 85,45" });
@@ -228,8 +261,8 @@ function crearMolarCentroMixto(x, y) {
   return g;
 }
 
-function crearPremolar(x, y) {
-  var g = crearGrupo(x, y);
+function crearPremolar(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "40,45 55,5 70,45 55,45" });
   s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
@@ -244,8 +277,8 @@ function crearPremolar(x, y) {
   return g;
 }
 
-function crearBicuspideSuperior(x, y) {
-  var g = crearGrupo(x, y);
+function crearBicuspideSuperior(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "50,45 65,5 80,45" });
   s(g, "polygon", { points: "30,45 45,5 60,45" });
@@ -261,8 +294,8 @@ function crearBicuspideSuperior(x, y) {
   return g;
 }
 
-function crearIncisivoSuperior(x, y) {
-  var g = crearGrupo(x, y);
+function crearIncisivoSuperior(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "26,45 48,5 69.1,45" });
   s(g, "polygon", { points: "25,45 38.2,67.8 38.5,67 25,90" });
@@ -275,8 +308,8 @@ function crearIncisivoSuperior(x, y) {
   return g;
 }
 
-function crearMolarInferior46(x, y) {
-  var g = crearGrupo(x, y);
+function crearMolarInferior46(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "25,90 40,135 55,90" });
   s(g, "polygon", { points: "55,90 70,135 85,90" });
@@ -297,8 +330,8 @@ function crearMolarInferior46(x, y) {
   return g;
 }
 
-function crearMolarInferior36(x, y) {
-  var g = crearGrupo(x, y);
+function crearMolarInferior36(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "25,90 40,135 55,90" });
   s(g, "polygon", { points: "55,90 70,135 85,90" });
@@ -319,8 +352,8 @@ function crearMolarInferior36(x, y) {
   return g;
 }
 
-function crearPremolarInferior(x, y) {
-  var g = crearGrupo(x, y);
+function crearPremolarInferior(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "40,90 55,135 70,90 55,90" });
   s(g, "polygon", { points: "25,45 40,55 40,80 25,90" });
@@ -335,8 +368,8 @@ function crearPremolarInferior(x, y) {
   return g;
 }
 
-function crearIncisivoInferior(x, y) {
-  var g = crearGrupo(x, y);
+function crearIncisivoInferior(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "26,90 48,135 69.1,90" });
   s(g, "polygon", { points: "25,45 70,45 58,68 38.2,67.8" });
@@ -349,8 +382,8 @@ function crearIncisivoInferior(x, y) {
   return g;
 }
 
-function crearMolar85_75(x, y) {
-  var g = crearGrupo(x, y);
+function crearMolar85_75(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "25,90 40,135 55,90" });
   s(g, "polygon", { points: "55,90 70,135 85,90" });
@@ -372,8 +405,8 @@ function crearMolar85_75(x, y) {
   return g;
 }
 
-function crearMolarInferiorPermanente(x, y) {
-  var g = crearGrupo(x, y);
+function crearMolarInferiorPermanente(x, y, numDiente) {
+  var g = crearGrupo(x, y, numDiente);
   
   s(g, "polygon", { points: "25,90 40,135 55,90" });
   s(g, "polygon", { points: "55,90 70,135 85,90" });
@@ -408,9 +441,6 @@ REGLAS_DIENTES.incSup.fn = crearIncisivoSuperior;
 REGLAS_DIENTES.incInf.fn = crearIncisivoInferior;
 REGLAS_DIENTES.incTempSup.fn = crearIncisivoSuperior;
 REGLAS_DIENTES.incTempInf.fn = crearIncisivoInferior;
-
-// ELIMINADO: Event listener de radio buttons - AHORA LO MANEJA PRIMEFACES
-// document.addEventListener('DOMContentLoaded', function() { ... });
 
 function obtenerEspaciadoVertical(i) {
   var v = CONFIG.ESPACIADO.vertical;
@@ -511,13 +541,16 @@ function actualizarOdontograma() {
       etiq.textContent = num;
       svg.appendChild(etiq);
       
+      // MODIFICADO: Pasar el número del diente a la función creadora
       var fn = mapaDientes[num];
       if (fn) {
         var centro = x + w / 2;
-        var tmp = fn(0, 0);
+        // Llamar a fn(0,0,num) para obtener el grupo temporal y calcular offset
+        var tmp = fn(0, 0, num);
         var offset = tmp.centroOffset !== undefined ? tmp.centroOffset : 38.5;
         var yPos = inf ? y - 125 : y + CONFIG.DIENTE.alto + 30;
-        svg.appendChild(fn(centro - offset, yPos));
+        // Crear el diente real con el número
+        svg.appendChild(fn(centro - offset, yPos, num));
       }
       
       x += w;
@@ -545,3 +578,16 @@ if (document.readyState === 'loading') {
 }
 
 window.actualizarOdontograma = actualizarOdontograma;
+
+window.aplicarColorSeleccionado = function(color) {
+  console.log("Color:", color);
+
+  if (!window.superficieSeleccionada) return;
+
+  var el = window.superficieSeleccionada;
+
+  el.setAttribute("fill", color);
+  el.dataset.usuarioColor = color;
+
+  PF('dlgSuperficie').hide();
+};

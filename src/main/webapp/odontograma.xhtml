@@ -16,7 +16,8 @@
 <h:form id="formOdontograma">
 
     <!-- TOOLBAR SUPERIOR -->
-   	<ui:include src="components/toolbar-superior.xhtml"/>
+   	<ui:include src="/view/odontograma/components/toolbar-superior.xhtml"/>
+   	
 
     <div class="layout-odontograma">
 
@@ -29,15 +30,15 @@
             <p:tabView id="tabsOdontograma">
 
                 <p:tab title="Odontograma Inicial">
-                    <ui:include src="tabs/inicial.xhtml"/>
+                    <ui:include src="/view/odontograma/tabs/inicial.xhtml"/>
                 </p:tab>
 
                 <p:tab title="Odontograma Evolución">
-                    <ui:include src="tabs/evolucion.xhtml"/>
+                    <ui:include src="/view/odontograma/tabs/evolucion.xhtml"/>
                 </p:tab>
 
                 <p:tab title="Historial de Odontogramas">
-                    <ui:include src="tabs/historial.xhtml"/>
+                    <ui:include src="/view/odontograma/tabs/historial.xhtml"/>
                 </p:tab>
 
             </p:tabView>
@@ -49,8 +50,8 @@
 </h:form>
 
 <!-- DRAWERS / DIALOGS -->
-<ui:include src="dialogs/presupuesto.xhtml"/>
-<ui:include src="dialogs/cobros.xhtml"/>
+<ui:include src="/view/odontograma/dialogs/presupuesto.xhtml"/>
+<ui:include src="/view/odontograma/dialogs/cobros.xhtml"/>
 <h:outputScript library="js" name="odontograma.js" target="body" />
 
 </h:body>
