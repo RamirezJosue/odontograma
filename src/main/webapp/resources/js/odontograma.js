@@ -182,7 +182,7 @@ function aplicarEventosSuperficie(el) {
     console.log("Diente seleccionado:", diente);
     window.superficieSeleccionada = el;
     window.dienteSeleccionado = diente;
-    PF('dlgSuperficie').show();
+    PF('dlgServicio').show();
   });
 }
 
@@ -196,7 +196,7 @@ function aplicarColorSeleccionado(color) {
   el.dataset.originalFill = color;
 
   // cerrar modal
-  PF('dlgSuperficie').hide();
+  PF('dlgServicio').hide();
 }
 
 function crearSuperficie(g, tipo, attrs) {
@@ -589,5 +589,5 @@ window.aplicarColorSeleccionado = function(color) {
   el.setAttribute("fill", color);
   el.dataset.usuarioColor = color;
 
-  PF('dlgSuperficie').hide();
+  PF('dlgServicio').hide();
 };

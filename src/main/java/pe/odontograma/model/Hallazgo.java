@@ -10,6 +10,7 @@ public class Hallazgo implements Serializable {
     private String descripcion;
     private Integer cantidad;
     private String nota;
+    private String tipo; // Agregar campo tipo
     
     // Constructor vacío
     public Hallazgo() {
@@ -24,43 +25,43 @@ public class Hallazgo implements Serializable {
         this.nota = nota;
     }
 
-	public String getPiezaDental() {
-		return piezaDental;
-	}
+    public String getPiezaDental() {
+        return piezaDental;
+    }
 
-	public void setPiezaDental(String piezaDental) {
-		this.piezaDental = piezaDental;
-	}
+    public void setPiezaDental(String piezaDental) {
+        this.piezaDental = piezaDental;
+    }
 
-	public String getDescripcion() {
-		return descripcion;
-	}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-	public Integer getCantidad() {
-		return cantidad;
-	}
+    public Integer getCantidad() {
+        return cantidad;
+    }
 
-	public void setCantidad(Integer cantidad) {
-		this.cantidad = cantidad;
-	}
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
+    }
 
-	public String getNota() {
-		return nota;
-	}
+    public String getNota() {
+        return nota;
+    }
 
-	public void setNota(String nota) {
-		this.nota = nota;
-	}
+    public void setNota(String nota) {
+        this.nota = nota;
+    }
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-    
-    // Getters y Setters...
-    
-    
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 }

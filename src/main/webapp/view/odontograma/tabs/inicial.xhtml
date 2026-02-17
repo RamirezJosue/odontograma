@@ -1,11 +1,11 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:f="http://xmlns.jcp.org/jsf/core"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-    <!-- Estilos CSS integrados -->
-    <h:outputStylesheet>
+	<!-- Estilos CSS integrados -->
+	<h:outputStylesheet>
         .odontograma-flex {
             display: flex;
             justify-content: space-between;
@@ -100,208 +100,350 @@
         }
     </h:outputStylesheet>
 
-    <!-- OPCIONES -->
-    <div class="odontograma-flex">
-        <!-- IZQUIERDA -->
+	<!-- OPCIONES -->
+	<div class="odontograma-flex">
+		<!-- IZQUIERDA -->
 		<div class="flex-left">
-		    <h:form id="formDenticion">
-		        <p:fieldset legend="Seleccione el Tipo de Dentición">
+			<h:form id="formDenticion">
+				<p:fieldset legend="Seleccione el Tipo de Dentición">
 					<p:selectOneRadio id="denticionRadio"
-					                  value="#{odontogramaBean.tipoDenticion}"
-					                  onchange="tipoDenticion = this.value; actualizarOdontograma();">
-					
-					    <f:selectItem itemLabel="Dentición Mixta" itemValue="mixta" />
-					    <f:selectItem itemLabel="Dentición Permanente" itemValue="permanente" />
-					    <f:selectItem itemLabel="Dentición Decidua" itemValue="decidua" />
-					
+						value="#{odontogramaBean.tipoDenticion}"
+						onchange="tipoDenticion = this.value; actualizarOdontograma();">
+
+						<f:selectItem itemLabel="Dentición Mixta" itemValue="mixta" />
+						<f:selectItem itemLabel="Dentición Permanente"
+							itemValue="permanente" />
+						<f:selectItem itemLabel="Dentición Decidua" itemValue="decidua" />
+
 					</p:selectOneRadio>
-		        </p:fieldset>
-		    </h:form>
+				</p:fieldset>
+			</h:form>
 		</div>
 
 
-        <!-- DERECHA -->
-        <div class="flex-right">
-            <p:fieldset legend="Seleccione la Fecha de Creación">
-                <p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
-            </p:fieldset>
-        </div>
-    </div>
+		<!-- DERECHA -->
+		<div class="flex-right">
+			<p:fieldset legend="Seleccione la Fecha de Creación">
+				<p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
+			</p:fieldset>
+		</div>
+	</div>
 
-    <div style="margin: 2rem 0; text-align: center; overflow-x: auto;">
-        <svg id="odontograma" preserveAspectRatio="xMidYMid meet"
-             style="border: 1px solid #ddd; background: white; display: block; margin: 0 auto;">
+	<div style="margin: 2rem 0; text-align: center; overflow-x: auto;">
+		<svg id="odontograma" preserveAspectRatio="xMidYMid meet"
+			style="border: 1px solid #ddd; background: white; display: block; margin: 0 auto;">
         </svg>
-    </div>
+	</div>
 
-    <!-- SECCIÓN DE HALLAZGOS -->
-    <div class="hallazgos">
-        <p:fieldset legend="Registro de Hallazgos">
-            <h:form id="formHallazgos">
-                <p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
-                    styleClass="registro-hallazgos-table" editable="true">
-                    
-                    <p:column headerText="N° Pieza Dental">
-                        <h:outputText value="#{h.piezaDental}" />
-                    </p:column>
+	<!-- SECCIÓN DE HALLAZGOS -->
+	<div class="hallazgos">
+		<p:fieldset legend="Registro de Hallazgos">
+			<h:form id="formHallazgos">
+				<p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
+					styleClass="registro-hallazgos-table" editable="true">
 
-                    <p:column headerText="Hallazgo">
-                        <h:outputText value="#{h.descripcion}" />
-                    </p:column>
+					<p:column headerText="N° Pieza Dental">
+						<h:outputText value="#{h.piezaDental}" />
+					</p:column>
 
-                    <p:column headerText="Cantidad">
-                        <h:outputText value="#{h.cantidad}" />
-                    </p:column>
+					<p:column headerText="Hallazgo">
+						<h:outputText value="#{h.descripcion}" />
+					</p:column>
 
-                    <p:column headerText="Nota">
-                        <p:inputTextarea value="#{h.nota}" autoResize="true" />
-                    </p:column>
-                </p:dataTable>
+					<p:column headerText="Cantidad">
+						<h:outputText value="#{h.cantidad}" />
+					</p:column>
 
-                <br />
+					<p:column headerText="Nota">
+						<p:inputTextarea value="#{h.nota}" autoResize="true" />
+					</p:column>
+				</p:dataTable>
 
-                <p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
-                    action="#{odontogramaBean.adicionarHallazgo}"
-                    update="formHallazgos" />
+				<br />
 
-                <h:panelGroup style="margin-left:20px">
-                    <strong>Total:</strong> #{odontogramaBean.totalHallazgos}
+				<p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
+					action="#{odontogramaBean.adicionarHallazgo}"
+					update="formHallazgos" />
+
+				<h:panelGroup style="margin-left:20px">
+					<strong>Total:</strong> #{odontogramaBean.totalHallazgos}
                 </h:panelGroup>
-            </h:form>
-        </p:fieldset>
-    </div>
+			</h:form>
+		</p:fieldset>
+	</div>
 
-    <!-- SECCIÓN DE EVALUACIÓN ODONTOLÓGICA (NUEVA) -->
-    <div class="evaluacion-section">
-        <p:fieldset legend="Evaluación Odontológica" styleClass="evaluacion-fieldset">
-            
-            <!-- Nueva Sección con Combo Box para Diagnóstico CIE-10 -->
-            <div class="evaluacion-combo-container">
-                <h:outputLabel for="diagnosticoCombo" value="Seleccione Diagnóstico CIE-10:" />
-                <p:selectOneMenu id="diagnosticoCombo" 
-                    styleClass="evaluacion-combo"
-                    filter="true" 
-                    filterMatchMode="contains"
-                    panelStyle="width:400px">
-                    
-                    <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
-                    <f:selectItem itemLabel="K02 - Caries dental" itemValue="K02" />
-                    <f:selectItem itemLabel="K03 - Otras enfermedades de los tejidos dentales duros" itemValue="K03" />
-                    <f:selectItem itemLabel="K04 - Enfermedades de la pulpa y de los tejidos periapicales" itemValue="K04" />
-                    <f:selectItem itemLabel="K05 - Gingivitis y enfermedades periodontales" itemValue="K05" />
-                    <f:selectItem itemLabel="K06 - Otros trastornos de la encía y de la zona edéntula" itemValue="K06" />
-                    <f:selectItem itemLabel="K07 - Anomalías dentofaciales" itemValue="K07" />
-                    <f:selectItem itemLabel="K08 - Otros trastornos de los dientes y de sus estructuras de sostén" itemValue="K08" />
-                    <f:selectItem itemLabel="K09 - Quistes de la región bucal" itemValue="K09" />
-                    <f:selectItem itemLabel="K10 - Otros trastornos de los maxilares" itemValue="K10" />
-                    <f:selectItem itemLabel="K11 - Enfermedades de las glándulas salivales" itemValue="K11" />
-                    <f:selectItem itemLabel="K12 - Estomatitis y lesiones afines" itemValue="K12" />
-                    <f:selectItem itemLabel="K13 - Otras enfermedades del labio y de la mucosa bucal" itemValue="K13" />
-                    <f:selectItem itemLabel="K14 - Enfermedades de la lengua" itemValue="K14" />
-                </p:selectOneMenu>
-            </div>
-            
-            <!-- Contenedor de las subsecciones -->
-            <div class="evaluacion-container">
-                
-                <!-- Sección Superior -->
-                <div class="evaluacion-superior">
-                    <div class="evaluacion-subsection">
-                        <h:outputLabel for="especificaciones" value="Especificaciones:" />
-                        <p:inputTextarea id="especificaciones" 
-                            rows="5" 
-                            cols="50"
-                            autoResize="true"
-                            placeholder="Ingrese las especificaciones..."
-                            styleClass="evaluacion-textarea" />
-                    </div>
-                    
-                    <div class="evaluacion-subsection">
-                        <h:outputLabel for="diagnostico" value="Diagnóstico:" />
-                        <p:inputTextarea id="diagnostico" 
-                            rows="5" 
-                            cols="50"
-                            autoResize="true"
-                            placeholder="Ingrese el diagnóstico del paciente..."
-                            styleClass="evaluacion-textarea" />
-                    </div>
-                </div>
-                
-                <!-- Sección Inferior -->
-                <div class="evaluacion-inferior">
-                    <div class="evaluacion-subsection">
-                        <h:outputLabel for="observaciones" value="Observaciones:" />
-                        <p:inputTextarea id="observaciones" 
-                            rows="5" 
-                            cols="50"
-                            autoResize="true"
-                            placeholder="Ingrese sus observaciones..."
-                            styleClass="evaluacion-textarea" />
-                    </div>
-                    
-                    <div class="evaluacion-subsection">
-                        <h:outputLabel for="planTrabajo" value="Plan de Trabajo:" />
-                        <p:inputTextarea id="planTrabajo" 
-                            rows="5" 
-                            cols="50"
-                            autoResize="true"
-                            placeholder="Ingrese el plan de trabajo..."
-                            styleClass="evaluacion-textarea" />
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Botones de acción (solo visual) -->
-            <div style="margin-top: 20px; text-align: right;">
-                <p:commandButton value="Guardar Evaluación" 
-                    icon="pi pi-save"
-                    styleClass="ui-button-success" 
-                    disabled="true" />
-                
-                <p:commandButton value="Limpiar" 
-                    icon="pi pi-trash"
-                    styleClass="ui-button-secondary"
-                    style="margin-left: 10px;"
-                    disabled="true" />
-                
-                <p:commandButton value="Imprimir" 
-                    icon="pi pi-print"
-                    style="margin-left: 10px;"
-                    disabled="true" />
-            </div>
-            
-        </p:fieldset>
-    </div>
-    
-    <h:form id="formDialogo">
-	    <p:dialog id="dlgSuperficie"
-	              widgetVar="dlgSuperficie"
-	              header="Seleccionar Color"
-	              modal="true"
-	              appendTo="@(body)"
-	              width="300">
-	
-	        <h:panelGrid columns="2" cellpadding="10">
-	
-	            <p:commandButton value="Rojo"
-	                style="background:#ff0000;color:white"
-	                onclick="aplicarColorSeleccionado('#ff0000');return false;" />
-	
-	            <p:commandButton value="Azul"
-	                style="background:#0000ff;color:white"
-	                onclick="aplicarColorSeleccionado('#0000ff');return false;" />
-	
-	            <p:commandButton value="Verde"
-	                style="background:#00ff00;color:white"
-	                onclick="aplicarColorSeleccionado('#00ff00');return false;" />
-	
-	            <p:commandButton value="Amarillo"
-	                style="background:#ffff00;color:black"
-	                onclick="aplicarColorSeleccionado('#ffff00');return false;" />
-	
-	        </h:panelGrid>
-	
-	    </p:dialog>
-	</h:form>
-    
+	<!-- SECCIÓN DE EVALUACIÓN ODONTOLÓGICA (NUEVA) -->
+	<div class="evaluacion-section">
+		<p:fieldset legend="Evaluación Odontológica"
+			styleClass="evaluacion-fieldset">
+
+			<!-- Nueva Sección con Combo Box para Diagnóstico CIE-10 -->
+			<div class="evaluacion-combo-container">
+				<h:outputLabel for="diagnosticoCombo"
+					value="Seleccione Diagnóstico CIE-10:" />
+				<p:selectOneMenu id="diagnosticoCombo" styleClass="evaluacion-combo"
+					filter="true" filterMatchMode="contains" panelStyle="width:400px">
+
+					<f:selectItem itemLabel="Seleccione..." itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="K02 - Caries dental" itemValue="K02" />
+					<f:selectItem
+						itemLabel="K03 - Otras enfermedades de los tejidos dentales duros"
+						itemValue="K03" />
+					<f:selectItem
+						itemLabel="K04 - Enfermedades de la pulpa y de los tejidos periapicales"
+						itemValue="K04" />
+					<f:selectItem
+						itemLabel="K05 - Gingivitis y enfermedades periodontales"
+						itemValue="K05" />
+					<f:selectItem
+						itemLabel="K06 - Otros trastornos de la encía y de la zona edéntula"
+						itemValue="K06" />
+					<f:selectItem itemLabel="K07 - Anomalías dentofaciales"
+						itemValue="K07" />
+					<f:selectItem
+						itemLabel="K08 - Otros trastornos de los dientes y de sus estructuras de sostén"
+						itemValue="K08" />
+					<f:selectItem itemLabel="K09 - Quistes de la región bucal"
+						itemValue="K09" />
+					<f:selectItem itemLabel="K10 - Otros trastornos de los maxilares"
+						itemValue="K10" />
+					<f:selectItem
+						itemLabel="K11 - Enfermedades de las glándulas salivales"
+						itemValue="K11" />
+					<f:selectItem itemLabel="K12 - Estomatitis y lesiones afines"
+						itemValue="K12" />
+					<f:selectItem
+						itemLabel="K13 - Otras enfermedades del labio y de la mucosa bucal"
+						itemValue="K13" />
+					<f:selectItem itemLabel="K14 - Enfermedades de la lengua"
+						itemValue="K14" />
+				</p:selectOneMenu>
+			</div>
+
+			<!-- Contenedor de las subsecciones -->
+			<div class="evaluacion-container">
+
+				<!-- Sección Superior -->
+				<div class="evaluacion-superior">
+					<div class="evaluacion-subsection">
+						<h:outputLabel for="especificaciones" value="Especificaciones:" />
+						<p:inputTextarea id="especificaciones" rows="5" cols="50"
+							autoResize="true" placeholder="Ingrese las especificaciones..."
+							styleClass="evaluacion-textarea" />
+					</div>
+
+					<div class="evaluacion-subsection">
+						<h:outputLabel for="diagnostico" value="Diagnóstico:" />
+						<p:inputTextarea id="diagnostico" rows="5" cols="50"
+							autoResize="true"
+							placeholder="Ingrese el diagnóstico del paciente..."
+							styleClass="evaluacion-textarea" />
+					</div>
+				</div>
+
+				<!-- Sección Inferior -->
+				<div class="evaluacion-inferior">
+					<div class="evaluacion-subsection">
+						<h:outputLabel for="observaciones" value="Observaciones:" />
+						<p:inputTextarea id="observaciones" rows="5" cols="50"
+							autoResize="true" placeholder="Ingrese sus observaciones..."
+							styleClass="evaluacion-textarea" />
+					</div>
+
+					<div class="evaluacion-subsection">
+						<h:outputLabel for="planTrabajo" value="Plan de Trabajo:" />
+						<p:inputTextarea id="planTrabajo" rows="5" cols="50"
+							autoResize="true" placeholder="Ingrese el plan de trabajo..."
+							styleClass="evaluacion-textarea" />
+					</div>
+				</div>
+			</div>
+
+			<!-- Botones de acción (solo visual) -->
+			<div style="margin-top: 20px; text-align: right;">
+				<p:commandButton value="Guardar Evaluación" icon="pi pi-save"
+					styleClass="ui-button-success" disabled="true" />
+
+				<p:commandButton value="Limpiar" icon="pi pi-trash"
+					styleClass="ui-button-secondary" style="margin-left: 10px;"
+					disabled="true" />
+
+				<p:commandButton value="Imprimir" icon="pi pi-print"
+					style="margin-left: 10px;" disabled="true" />
+			</div>
+
+		</p:fieldset>
+	</div>
+
+	<!-- DIALOG DE COLORES -->
+	<!-- <h:form id="formDialogo">
+		<p:dialog id="dlgSuperficie" widgetVar="dlgSuperficie"
+			header="Seleccionar Color" modal="true" appendTo="@(body)"
+			width="300">
+			<h:panelGrid columns="2" cellpadding="10">
+				<p:commandButton value="Rojo" style="background:#ff0000;color:white"
+					onclick="aplicarColorSeleccionado('#ff0000');return false;" />
+
+				<p:commandButton value="Azul" style="background:#0000ff;color:white"
+					onclick="aplicarColorSeleccionado('#0000ff');return false;" />
+
+				<p:commandButton value="Verde"
+					style="background:#00ff00;color:white"
+					onclick="aplicarColorSeleccionado('#00ff00');return false;" />
+
+				<p:commandButton value="Amarillo"
+					style="background:#ffff00;color:black"
+					onclick="aplicarColorSeleccionado('#ffff00');return false;" />
+			</h:panelGrid>
+		</p:dialog>
+	</h:form> -->
+
+
+	<!-- SERVICIOS MODAL -->
+		<p:dialog id="dlgServicio" widgetVar="dlgServicio"
+			header="Seleccione un Servicio" modal="true" width="700"
+			appendTo="@(body)" responsive="true" resizable="false" dynamic="true"
+			contentStyle="overflow-x:hidden;">
+
+			<div
+				style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+
+				<!-- ================= COMBO SERVICIO ================= -->
+				<p:selectOneMenu id="servicio"
+					value="#{odontogramaBean.servicioSeleccionado}"
+					style="width:90%; margin-bottom:20px">
+
+					<f:selectItem itemLabel="Seleccione..." itemValue="#{null}" />
+					<f:selectItem itemLabel="Implante" itemValue="implante" />
+					<f:selectItem itemLabel="Caries" itemValue="caries" />
+					<f:selectItem itemLabel="Prótesis Dental" itemValue="protesis" />
+					<f:selectItem itemLabel="Restauración" itemValue="restauracion" />
+					<f:selectItem itemLabel="Extracción" itemValue="extraccion" />
+
+
+					<p:ajax event="valueChange"
+						listener="#{odontogramaBean.onServicioChange}" process="@this"
+						update=":formOdontograma:panelDinamico" />
+
+				</p:selectOneMenu>
+
+				<!-- ================= PANEL DINÁMICO ================= -->
+				<p:outputPanel id="panelDinamico"
+					style="width:90%; margin-bottom:20px">
+
+					<!-- ========= IMPLANT	E ========= -->
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'implante'}">
+
+						<ul class="subtipo-lista">
+							<li class="subtipo-container"><span>Amalgama Dental</span>
+								<div class="botones-container">
+									<p:commandButton value="AM"
+										styleClass="simbologia boton-amalgama-azul #{odontogramaBean.subtipoSeleccionado eq 'AM' ? 'activo' : ''}"
+										process="@this" update="panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('AM')}" />
+
+									<p:commandButton value="AM"
+										styleClass="accion-boton boton-amalgama-rojo #{odontogramaBean.subtipoSeleccionado eq 'AM' ? 'activo' : ''}"
+										process="@this" update="panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('AM')}" />
+								</div></li>
+
+							<li class="subtipo-container"><span>Resina</span>
+								<div class="botones-container">
+									<p:commandButton value="R"
+										styleClass="simbologia boton-resina-azul #{odontogramaBean.subtipoSeleccionado eq 'R' ? 'activo' : ''}"
+										process="@this" update="panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('R')}" />
+
+									<p:commandButton value="R"
+										styleClass="accion-boton boton-resina-rojo #{odontogramaBean.subtipoSeleccionado eq 'R' ? 'activo' : ''}"
+										process="@this" update="panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('R')}" />
+								</div></li>
+
+							<li class="subtipo-container"><span>Iónomero de
+									Vidrio</span>
+								<div class="botones-container">
+									<p:commandButton value="IV"
+										styleClass="simbologia boton-ionomero-azul #{odontogramaBean.subtipoSeleccionado eq 'IV' ? 'activo' : ''}"
+										process="@this" update="panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IV')}" />
+
+									<p:commandButton value="IV"
+										styleClass="accion-boton boton-ionomero-rojo #{odontogramaBean.subtipoSeleccionado eq 'IV' ? 'activo' : ''}"
+										process="@this" update="panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IV')}" />
+								</div></li>
+						</ul>
+					</p:outputPanel>
+
+					<!-- ========= CARIES ========= -->
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'caries'}">
+						<div
+							style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+							<h3 style="margin-top: 0;">Opciones para Caries</h3>
+							<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+								<p:commandButton value="Caries Simple"
+									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'caries_simple' ? 'activo' : ''}"
+									process="@this" update="panelDinamico"
+									actionListener="#{odontogramaBean.setSubtipoSeleccionado('caries_simple')}" />
+
+								<p:commandButton value="Caries Profunda"
+									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'caries_profunda' ? 'activo' : ''}"
+									process="@this" update="panelDinamico"
+									actionListener="#{odontogramaBean.setSubtipoSeleccionado('caries_profunda')}" />
+
+								<p:commandButton value="Caries Recurrente"
+									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'caries_recurrente' ? 'activo' : ''}"
+									process="@this" update="panelDinamico"
+									actionListener="#{odontogramaBean.setSubtipoSeleccionado('caries_recurrente')}" />
+							</div>
+						</div>
+					</p:outputPanel>
+
+					<!-- ========= PRÓTESIS DENTAL ========= -->
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'protesis'}">
+						<div
+							style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
+							<h3 style="margin-top: 0;">Opciones para Prótesis Dental</h3>
+							<div style="display: flex; gap: 10px; flex-wrap: wrap;">
+								<p:commandButton value="Prótesis Fija"
+									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'protesis_fija' ? 'activo' : ''}"
+									process="@this" update="panelDinamico"
+									actionListener="#{odontogramaBean.setSubtipoSeleccionado('protesis_fija')}" />
+
+								<p:commandButton value="Prótesis Removible"
+									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'protesis_removible' ? 'activo' : ''}"
+									process="@this" update="panelDinamico"
+									actionListener="#{odontogramaBean.setSubtipoSeleccionado('protesis_removible')}" />
+							</div>
+						</div>
+					</p:outputPanel>
+
+					<p:outputPanel
+						rendered="#{empty odontogramaBean.servicioSeleccionado}">
+						<div style="padding: 20px; text-align: center; color: #666;">
+							Por favor, seleccione un servicio para ver las opciones
+							disponibles.</div>
+					</p:outputPanel>
+
+				</p:outputPanel>
+
+				<p:commandButton value="Aceptar" icon="pi pi-check"
+					style="width:50%;" action="#{odontogramaBean.guardarServicio}"
+					update="@form" oncomplete="PF('dlgServicio').hide();" />
+
+			</div>
+
+		</p:dialog>
+
+
+
+
+
+
 </ui:composition>
