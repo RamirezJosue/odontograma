@@ -301,6 +301,7 @@
 
 
 	<!-- SERVICIOS MODAL -->
+	<h:form id="formServicio">
 		<p:dialog id="dlgServicio" widgetVar="dlgServicio"
 			header="Seleccione un Servicio" modal="true" width="700"
 			appendTo="@(body)" responsive="true" resizable="false" dynamic="true"
@@ -324,7 +325,7 @@
 
 					<p:ajax event="valueChange"
 						listener="#{odontogramaBean.onServicioChange}" process="@this"
-						update=":formOdontograma:panelDinamico" />
+						update="panelDinamico" />
 
 				</p:selectOneMenu>
 
