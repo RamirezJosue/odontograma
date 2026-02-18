@@ -11,7 +11,10 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+
+import org.primefaces.PrimeFaces;
 
 @SuppressWarnings("unused")
 @ManagedBean
@@ -28,6 +31,9 @@ public class OdontogramaBean implements Serializable {
 	private String servicioSeleccionado;
 	private String subtipoSeleccionado;
 
+	private String dienteSeleccionado;
+	private String ultimoSubtipo;
+
 	private Map<String, Boolean> servicioActivo = new HashMap<>();
 
 	@PostConstruct
@@ -41,47 +47,59 @@ public class OdontogramaBean implements Serializable {
 	}
 
 	public void onServicioChange() {
-	    System.out.println("=== onServicioChange ===");
-	    System.out.println("Servicio recibido: '" + servicioSeleccionado + "'");
-	    
-	    this.subtipoSeleccionado = null;
-	    servicioActivo.clear();
-	    
-	    if (servicioSeleccionado != null && !servicioSeleccionado.isEmpty()) {
-	        servicioActivo.put(servicioSeleccionado, true);
-	        System.out.println("Servicio activo: " + servicioSeleccionado);
-	    }
+		System.out.println("=== onServicioChange ===");
+		System.out.println("Servicio recibido: '" + servicioSeleccionado + "'");
+
+		this.subtipoSeleccionado = null;
+		servicioActivo.clear();
+
+		if (servicioSeleccionado != null && !servicioSeleccionado.isEmpty()) {
+			servicioActivo.put(servicioSeleccionado, true);
+			System.out.println("Servicio activo: " + servicioSeleccionado);
+		}
 	}
 
 	public void guardarServicio() {
-		System.out.println("=== guardarServicio ===");
-		System.out.println("Servicio: '" + servicioSeleccionado + "'");
-		System.out.println("Subtipo: '" + subtipoSeleccionado + "'");
 
-		if (servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) {
-			System.out.println("Debe seleccionar un servicio");
-			return;
-		}
+	    if (servicioSeleccionado == null || servicioSeleccionado.trim().isEmpty()) {
+	        return;
+	    }
 
-		if (subtipoSeleccionado == null || subtipoSeleccionado.trim().isEmpty()) {
-			System.out.println("Debe seleccionar un subtipo");
-			return;
-		}
+	    if (subtipoSeleccionado == null || subtipoSeleccionado.trim().isEmpty()) {
+	        return;
+	    }
 
-		Hallazgo nuevo = new Hallazgo();
-		nuevo.setTipo(servicioSeleccionado);
-		nuevo.setDescripcion(subtipoSeleccionado);
-		nuevo.setPiezaDental("Pendiente");
-		nuevo.setCantidad(1);
+	    Hallazgo nuevo = new Hallazgo();
+	    nuevo.setTipo(servicioSeleccionado);
+	    nuevo.setDescripcion(subtipoSeleccionado);
+	    nuevo.setPiezaDental(dienteSeleccionado);
+	    nuevo.setCantidad(1);
 
-		hallazgos.add(nuevo);
+	    hallazgos.add(nuevo);
 
-		System.out.println("Hallazgo guardado. Total: " + hallazgos.size());
+	    // Guardamos antes de limpiar
+	    ultimoSubtipo = subtipoSeleccionado;
 
-		servicioSeleccionado = null;
-		subtipoSeleccionado = null;
-		servicioActivo.clear();
+	    // 🔥 Enviar el valor al JS correctamente
+	    PrimeFaces.current().ajax().addCallbackParam("subtipo", ultimoSubtipo);
+
+	    servicioSeleccionado = null;
+	    subtipoSeleccionado = null;
 	}
+	public void recibirDiente() {
+		String diente = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+				.get("dienteSeleccionado");
+
+		if (diente != null) {
+			this.dienteSeleccionado = diente;
+			System.out.println("Diente capturado en Bean: " + diente);
+		}
+	}
+
+	public String getUltimoSubtipo() {
+	    return ultimoSubtipo;
+	}
+
 
 	// Getters y Setters
 	public String getServicioSeleccionado() {
@@ -145,5 +163,14 @@ public class OdontogramaBean implements Serializable {
 
 	public int getTotalHallazgos() {
 		return hallazgos != null ? hallazgos.size() : 0;
+	}
+
+	public String getDienteSeleccionado() {
+		return dienteSeleccionado;
+	}
+
+	public void setDienteSeleccionado(String dienteSeleccionado) {
+		System.out.println("Diente recibido: " + dienteSeleccionado);
+		this.dienteSeleccionado = dienteSeleccionado;
 	}
 }

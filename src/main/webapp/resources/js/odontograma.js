@@ -163,28 +163,52 @@ function aplicarEventosSuperficie(el) {
   
   // MODIFICADO: Evento click para obtener el número del diente
   el.addEventListener("click", function(e) {
-    e.stopPropagation();
-    
-    // Obtener el grupo padre que contiene el data-diente
-    var g = el.closest("g");
-    var diente = null;
-    
-    if (g && g.dataset.diente) {
-      diente = g.dataset.diente;
-    } else {
-      // Fallback: intentar obtener del rectángulo contenedor
-      var rect = el.closest("rect");
-      if (rect && rect.dataset.cajonId) {
-        diente = rect.dataset.cajonId.split("_")[0];
+      e.stopPropagation();
+
+      var g = el.closest("g");
+      var diente = null;
+
+      if (g && g.dataset.diente) {
+          diente = g.dataset.diente;
       }
-    }
-    
-    console.log("Diente seleccionado:", diente);
-    window.superficieSeleccionada = el;
-    window.dienteSeleccionado = diente;
-    PF('dlgServicio').show();
+
+      console.log("Diente seleccionado:", diente);
+
+      window.superficieSeleccionada = el;
+
+      // 🔥 Enviar número al Bean
+      enviarDiente([{name:'dienteSeleccionado', value:diente}]);
+
+      PF('dlgServicio').show();
   });
+
 }
+
+
+function pintarTexto(valor) {
+
+    if (!window.superficieSeleccionada || !valor) {
+        return;
+    }
+
+    var bbox = window.superficieSeleccionada.getBBox();
+    var svg = window.superficieSeleccionada.ownerSVGElement;
+
+    var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
+    nuevoTexto.setAttribute("x", bbox.x + bbox.width / 2);
+    nuevoTexto.setAttribute("y", bbox.y + bbox.height / 2);
+    nuevoTexto.setAttribute("text-anchor", "middle");
+    nuevoTexto.setAttribute("dominant-baseline", "middle");
+    nuevoTexto.setAttribute("font-size", "10");
+    nuevoTexto.setAttribute("fill", "black");
+
+    nuevoTexto.textContent = valor;
+
+    svg.appendChild(nuevoTexto);
+}
+
+
 
 function aplicarColorSeleccionado(color) {
   if (!window.superficieSeleccionada) return;

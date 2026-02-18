@@ -55,7 +55,7 @@
         .evaluacion-superior,
         .evaluacion-inferior {
             display: flex;
-            gap: 20px;
+            gap: 50px;
         }
         
         .evaluacion-subsection {
@@ -607,11 +607,11 @@
 							</div>
 						</div>
 					</p:outputPanel>
-					
+
 					<!-- ========= RESTAURACION ========= -->
 
 					<p:outputPanel
-						rendered="#{odontogramaBean.servicioSeleccionado eq 'restauracion'}">						
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'restauracion'}">
 						<div class="implanteContenedor">
 							<div class="implanteCard">
 								<div>
@@ -726,9 +726,14 @@
 
 				</p:outputPanel>
 
-				<p:commandButton value="Aceptar" icon="pi pi-check"
-					style="width:50%;" action="#{odontogramaBean.guardarServicio}"
-					update="@form" oncomplete="PF('dlgServicio').hide();" />
+
+				<p:commandButton value="Aceptar"
+					action="#{odontogramaBean.guardarServicio}" update="formServicio"
+					oncomplete="if(args &amp;&amp; args.subtipo){ pintarTexto(args.subtipo); PF('dlgServicio').hide(); }" />
+
+				<p:remoteCommand name="enviarDiente"
+					actionListener="#{odontogramaBean.setDienteSeleccionado(param.dienteSeleccionado)}" />
+
 
 			</div>
 		</h:form>
