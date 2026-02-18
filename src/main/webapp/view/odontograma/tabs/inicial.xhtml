@@ -401,11 +401,11 @@
 									<p:commandButton value="IMP" process="@form"
 										styleClass="implanteBtnAzul"
 										update="formServicio:panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMPA')}" />
 									<p:commandButton value="IMP" process="@form"
 										styleClass="implanteBtnRojo"
 										update="formServicio:panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMPR')}" />
 								</div>
 							</div>
 						</div>
@@ -730,6 +730,7 @@
 				<p:commandButton value="Aceptar"
 					action="#{odontogramaBean.guardarServicio}" update="formServicio"
 					oncomplete="if(args &amp;&amp; args.subtipo){ pintarTexto(args.subtipo); PF('dlgServicio').hide(); }" />
+
 
 				<p:remoteCommand name="enviarDiente"
 					actionListener="#{odontogramaBean.setDienteSeleccionado(param.dienteSeleccionado)}" />

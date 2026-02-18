@@ -142,6 +142,8 @@ function aplicarEventosCajon(el) {
 }
 
 function aplicarEventosSuperficie(el) {
+	
+	
   if (el.dataset.clickable) return;
   
   el.dataset.clickable = "true";
@@ -186,13 +188,19 @@ function aplicarEventosSuperficie(el) {
 
 
 function pintarTexto(valor) {
-
-    if (!window.superficieSeleccionada || !valor) {
+    if (!window.superficieSeleccionadaId || !valor) {
         return;
     }
 
-    var bbox = window.superficieSeleccionada.getBBox();
-    var svg = window.superficieSeleccionada.ownerSVGElement;
+    var superficie = document.getElementById(window.superficieSeleccionadaId);
+    if (!superficie) return;
+
+    var bbox = superficie.getBBox();
+    var svg = superficie.ownerSVGElement;
+
+    // Eliminar texto anterior si existe
+    var old = svg.querySelector('[data-texto="' + window.superficieSeleccionadaId + '"]');
+    if (old) old.remove();
 
     var nuevoTexto = document.createElementNS("http://www.w3.org/2000/svg", "text");
 
@@ -201,12 +209,15 @@ function pintarTexto(valor) {
     nuevoTexto.setAttribute("text-anchor", "middle");
     nuevoTexto.setAttribute("dominant-baseline", "middle");
     nuevoTexto.setAttribute("font-size", "10");
+    nuevoTexto.setAttribute("font-weight", "bold");
     nuevoTexto.setAttribute("fill", "black");
+    nuevoTexto.setAttribute("data-texto", window.superficieSeleccionadaId);
 
     nuevoTexto.textContent = valor;
 
     svg.appendChild(nuevoTexto);
 }
+
 
 
 
