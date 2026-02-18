@@ -101,6 +101,50 @@
         
         
         /* ***************** MODAL *****************  */
+        
+		/* IMPLANTE */
+		 .implanteContenedor{
+        	padding: 10px 15px; 
+        	border: 2px solid rgb(211, 224, 235); 
+        	border-radius: 5px; 
+        	margin-bottom:10px;
+        }
+        
+        .implanteCard{
+        	display: flex; 
+        	justify-content: space-between; 
+        	align-items: center;
+        }
+		.implanteBtncontainer{
+        	display: flex; 
+        	gap: 10px
+        }   
+		  .implanteBtnAzul.ui-button{
+			border-radius: 100%;
+			width: 40px;
+			height: 40px;
+			font-size: 14px;
+			color: blue;	
+			border:2px solid blue;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;     
+        }
+        
+        .implanteBtnRojo.ui-button{
+        	border-radius: 100%;
+			width: 40px;
+			height: 40px;
+			font-size: 14px;
+			color: red;	
+			border:2px solid red;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+        }
+		
 		/* CARIES */
         .cariesContenedor{
         	padding: 10px 15px; 
@@ -118,20 +162,7 @@
         .cariesBtncontainer{
         	display: flex; 
         	gap: 10px
-        }
-        
-        .cariesBtnAzul.ui-button{
-			border-radius: 100%;
-			width: 40px;
-			height: 40px;
-			font-size: 14px;
-			color: blue;	
-			border:2px solid blue;
-			background: #fff;
-			display: flex;
-			align-items: center;
-			justify-content: center;     
-        }
+        }               
         
         .cariesBtnRojo.ui-button{
         	border-radius: 100%;
@@ -145,6 +176,31 @@
 			align-items: center;
 			justify-content: center;
         }
+             
+        .cariesBtnRojoFull.ui-button{
+        	border-radius: 100%;
+			width: 40px;
+			height: 40px;
+			font-size: 14px;
+			color: red;	
+			border:20px solid red;
+			background: red;
+        }
+        
+       .cariesBtnRojoAzul.ui-button {
+		    width: 40px;
+		    height: 40px;
+		    border-radius: 50%;
+		    font-size: 14px;
+		    color: white !important;
+		    border: none !important;		    
+		    background: linear-gradient(to right, 
+		                #2196F3 50%, 
+		                #f44336 50%) !important;
+		}
+
+        
+        	
     </h:outputStylesheet>
 
 	<!-- OPCIONES -->
@@ -383,38 +439,18 @@
 					<!-- ========= IMPLANTE ========= -->
 					<p:outputPanel
 						rendered="#{odontogramaBean.servicioSeleccionado eq 'implante'}">
-						<div
-							style="padding: 10px 15px; border: 2px solid rgb(211, 224, 235); border-radius: 5px;">
-							<div
-								style="display: flex; justify-content: space-between; align-items: center;">
+						<div class="implanteContenedor">
+							<div class="implanteCard">
 								<div>
 									<p>Implante Dental</p>
 								</div>
-								<div class="botones-container" style="display: flex; gap: 10px">
+								<div class="cariesBtncontainer">
 									<p:commandButton value="IMP" process="@form"
-										style="border-radius: 100%;
-										    width: 40px;
-										    height: 40px;
-										    font-size: 14px;
-										    color: blue;	
-										    border:2px solid blue;
-										    background: #fff;
-										    display: flex;
-										    align-items: center;
-										    justify-content: center;"
+										styleClass="implanteBtnAzul"
 										update="formServicio:panelDinamico"
 										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
 									<p:commandButton value="IMP" process="@form"
-										style="border-radius: 100%;
-										    width: 40px;
-										    height: 40px;
-										    font-size: 14px;
-										    color: red;
-										   	border:2px solid red;
-										    background: #fff;
-										    display: flex;
-										    align-items: center;
-										    justify-content: center;"
+										styleClass="implanteBtnRojo"
 										update="formServicio:panelDinamico"
 										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
 								</div>
@@ -423,7 +459,6 @@
 					</p:outputPanel>
 
 					<!-- ========= CARIES ========= -->
-
 					<p:outputPanel
 						rendered="#{odontogramaBean.servicioSeleccionado eq 'caries'}">
 						<div class="cariesContenedor">
@@ -432,17 +467,74 @@
 									<p>Caries Dental</p>
 								</div>
 								<div class="cariesBtncontainer">
-									<p:commandButton value="IMP" process="@form"
-										styleClass="cariesBtnAzul" update="formServicio:panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
-									<p:commandButton value="IMP" process="@form"
-										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+									<p:commandButton value="" process="@form"
+										styleClass="cariesBtnRojoFull"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CD')}" />
 								</div>
 							</div>
 						</div>
-
-
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries Recurrente</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="" process="@form"
+										styleClass="cariesBtnRojoAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CR')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries a Nivel del Esmalte</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="CE" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CE')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries a Nivel de la Dentina</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="CD" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CD')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries a Nivel de la Pulpa</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="CDP" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CDP')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Mancha Blanca</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="MB" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('MB')}" />
+								</div>
+							</div>
+						</div>
 					</p:outputPanel>
 
 					<!-- ========= PRÓTESIS DENTAL ========= -->
