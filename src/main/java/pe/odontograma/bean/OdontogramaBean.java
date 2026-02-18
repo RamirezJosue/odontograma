@@ -41,17 +41,16 @@ public class OdontogramaBean implements Serializable {
 	}
 
 	public void onServicioChange() {
-		System.out.println("=== onServicioChange ===");
-		System.out.println("Servicio seleccionado: '" + this.servicioSeleccionado + "'");
-
-		this.subtipoSeleccionado = null;
-
-		servicioActivo.clear();
-		if (servicioSeleccionado != null && !servicioSeleccionado.isEmpty()) {
-			servicioActivo.put(servicioSeleccionado, true);
-		}
-
-		System.out.println("Subtipo limpiado, servicio activo: " + servicioSeleccionado);
+	    System.out.println("=== onServicioChange ===");
+	    System.out.println("Servicio recibido: '" + servicioSeleccionado + "'");
+	    
+	    this.subtipoSeleccionado = null;
+	    servicioActivo.clear();
+	    
+	    if (servicioSeleccionado != null && !servicioSeleccionado.isEmpty()) {
+	        servicioActivo.put(servicioSeleccionado, true);
+	        System.out.println("Servicio activo: " + servicioSeleccionado);
+	    }
 	}
 
 	public void guardarServicio() {

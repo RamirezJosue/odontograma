@@ -98,6 +98,53 @@
                 flex-direction: column;
             }
         }
+        
+        
+        /* ***************** MODAL *****************  */
+		/* CARIES */
+        .cariesContenedor{
+        	padding: 10px 15px; 
+        	border: 2px solid rgb(211, 224, 235); 
+        	border-radius: 5px; 
+        	margin-bottom:10px;
+        }
+        
+        .cariesCard{
+        	display: flex; 
+        	justify-content: space-between; 
+        	align-items: center;
+        }
+        
+        .cariesBtncontainer{
+        	display: flex; 
+        	gap: 10px
+        }
+        
+        .cariesBtnAzul.ui-button{
+			border-radius: 100%;
+			width: 40px;
+			height: 40px;
+			font-size: 14px;
+			color: blue;	
+			border:2px solid blue;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;     
+        }
+        
+        .cariesBtnRojo.ui-button{
+        	border-radius: 100%;
+			width: 40px;
+			height: 40px;
+			font-size: 14px;
+			color: red;	
+			border:2px solid red;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+        }
     </h:outputStylesheet>
 
 	<!-- OPCIONES -->
@@ -304,7 +351,7 @@
 	<h:form id="formServicio">
 		<p:dialog id="dlgServicio" widgetVar="dlgServicio"
 			header="Seleccione un Servicio" modal="true" width="700"
-			appendTo="@(body)" responsive="true" resizable="false" dynamic="true"
+			appendTo="@(body)" responsive="true" resizable="false"
 			contentStyle="overflow-x:hidden;">
 
 			<div
@@ -315,17 +362,17 @@
 					value="#{odontogramaBean.servicioSeleccionado}"
 					style="width:90%; margin-bottom:20px">
 
-					<f:selectItem itemLabel="Seleccione..." itemValue="#{null}" />
+					<f:selectItem itemLabel="Seleccione..." itemValue=""
+						noSelectionOption="true" />
 					<f:selectItem itemLabel="Implante" itemValue="implante" />
 					<f:selectItem itemLabel="Caries" itemValue="caries" />
 					<f:selectItem itemLabel="Prótesis Dental" itemValue="protesis" />
 					<f:selectItem itemLabel="Restauración" itemValue="restauracion" />
 					<f:selectItem itemLabel="Extracción" itemValue="extraccion" />
 
-
 					<p:ajax event="valueChange"
-						listener="#{odontogramaBean.onServicioChange}" process="@this"
-						update="panelDinamico" />
+						listener="#{odontogramaBean.onServicioChange}" process="@form"
+						update="formServicio:panelDinamico" />
 
 				</p:selectOneMenu>
 
@@ -333,76 +380,69 @@
 				<p:outputPanel id="panelDinamico"
 					style="width:90%; margin-bottom:20px">
 
-					<!-- ========= IMPLANT	E ========= -->
+					<!-- ========= IMPLANTE ========= -->
 					<p:outputPanel
 						rendered="#{odontogramaBean.servicioSeleccionado eq 'implante'}">
-
-						<ul class="subtipo-lista">
-							<li class="subtipo-container"><span>Amalgama Dental</span>
-								<div class="botones-container">
-									<p:commandButton value="AM"
-										styleClass="simbologia boton-amalgama-azul #{odontogramaBean.subtipoSeleccionado eq 'AM' ? 'activo' : ''}"
-										process="@this" update="panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('AM')}" />
-
-									<p:commandButton value="AM"
-										styleClass="accion-boton boton-amalgama-rojo #{odontogramaBean.subtipoSeleccionado eq 'AM' ? 'activo' : ''}"
-										process="@this" update="panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('AM')}" />
-								</div></li>
-
-							<li class="subtipo-container"><span>Resina</span>
-								<div class="botones-container">
-									<p:commandButton value="R"
-										styleClass="simbologia boton-resina-azul #{odontogramaBean.subtipoSeleccionado eq 'R' ? 'activo' : ''}"
-										process="@this" update="panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('R')}" />
-
-									<p:commandButton value="R"
-										styleClass="accion-boton boton-resina-rojo #{odontogramaBean.subtipoSeleccionado eq 'R' ? 'activo' : ''}"
-										process="@this" update="panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('R')}" />
-								</div></li>
-
-							<li class="subtipo-container"><span>Iónomero de
-									Vidrio</span>
-								<div class="botones-container">
-									<p:commandButton value="IV"
-										styleClass="simbologia boton-ionomero-azul #{odontogramaBean.subtipoSeleccionado eq 'IV' ? 'activo' : ''}"
-										process="@this" update="panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IV')}" />
-
-									<p:commandButton value="IV"
-										styleClass="accion-boton boton-ionomero-rojo #{odontogramaBean.subtipoSeleccionado eq 'IV' ? 'activo' : ''}"
-										process="@this" update="panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IV')}" />
-								</div></li>
-						</ul>
+						<div
+							style="padding: 10px 15px; border: 2px solid rgb(211, 224, 235); border-radius: 5px;">
+							<div
+								style="display: flex; justify-content: space-between; align-items: center;">
+								<div>
+									<p>Implante Dental</p>
+								</div>
+								<div class="botones-container" style="display: flex; gap: 10px">
+									<p:commandButton value="IMP" process="@form"
+										style="border-radius: 100%;
+										    width: 40px;
+										    height: 40px;
+										    font-size: 14px;
+										    color: blue;	
+										    border:2px solid blue;
+										    background: #fff;
+										    display: flex;
+										    align-items: center;
+										    justify-content: center;"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+									<p:commandButton value="IMP" process="@form"
+										style="border-radius: 100%;
+										    width: 40px;
+										    height: 40px;
+										    font-size: 14px;
+										    color: red;
+										   	border:2px solid red;
+										    background: #fff;
+										    display: flex;
+										    align-items: center;
+										    justify-content: center;"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+								</div>
+							</div>
+						</div>
 					</p:outputPanel>
 
 					<!-- ========= CARIES ========= -->
+
 					<p:outputPanel
 						rendered="#{odontogramaBean.servicioSeleccionado eq 'caries'}">
-						<div
-							style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
-							<h3 style="margin-top: 0;">Opciones para Caries</h3>
-							<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-								<p:commandButton value="Caries Simple"
-									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'caries_simple' ? 'activo' : ''}"
-									process="@this" update="panelDinamico"
-									actionListener="#{odontogramaBean.setSubtipoSeleccionado('caries_simple')}" />
-
-								<p:commandButton value="Caries Profunda"
-									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'caries_profunda' ? 'activo' : ''}"
-									process="@this" update="panelDinamico"
-									actionListener="#{odontogramaBean.setSubtipoSeleccionado('caries_profunda')}" />
-
-								<p:commandButton value="Caries Recurrente"
-									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'caries_recurrente' ? 'activo' : ''}"
-									process="@this" update="panelDinamico"
-									actionListener="#{odontogramaBean.setSubtipoSeleccionado('caries_recurrente')}" />
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries Dental</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="IMP" process="@form"
+										styleClass="cariesBtnAzul" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+									<p:commandButton value="IMP" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+								</div>
 							</div>
 						</div>
+
+
 					</p:outputPanel>
 
 					<!-- ========= PRÓTESIS DENTAL ========= -->
@@ -414,12 +454,12 @@
 							<div style="display: flex; gap: 10px; flex-wrap: wrap;">
 								<p:commandButton value="Prótesis Fija"
 									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'protesis_fija' ? 'activo' : ''}"
-									process="@this" update="panelDinamico"
+									process="@form" update="formServicio:panelDinamico"
 									actionListener="#{odontogramaBean.setSubtipoSeleccionado('protesis_fija')}" />
 
 								<p:commandButton value="Prótesis Removible"
 									styleClass="#{odontogramaBean.subtipoSeleccionado eq 'protesis_removible' ? 'activo' : ''}"
-									process="@this" update="panelDinamico"
+									process="@form" update="formServicio:panelDinamico"
 									actionListener="#{odontogramaBean.setSubtipoSeleccionado('protesis_removible')}" />
 							</div>
 						</div>
@@ -442,7 +482,7 @@
 
 		</p:dialog>
 
-
+	</h:form>
 
 
 
