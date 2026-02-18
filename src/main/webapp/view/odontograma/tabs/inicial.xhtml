@@ -229,7 +229,7 @@
 			style="border: 1px solid #ddd; background: white; display: block; margin: 0 auto;">
         </svg>
 	</div>
-	
+
 	<div class="hallazgos">
 		<p:fieldset legend="Registro de Hallazgos">
 			<h:form id="formHallazgos">
@@ -363,166 +363,375 @@
 		header="Seleccione un Servicio" modal="true" width="700"
 		appendTo="@(body)" responsive="true" resizable="false"
 		contentStyle="overflow-x:hidden;">
-			<h:form id="formServicio">
-				<div
-					style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-					<p:selectOneMenu id="servicio"
-						value="#{odontogramaBean.servicioSeleccionado}"
-						style="width:90%; margin-bottom:20px">
-	
-						<f:selectItem itemLabel="Seleccione..." itemValue=""
-							noSelectionOption="true" />
-						<f:selectItem itemLabel="Implante" itemValue="implante" />
-						<f:selectItem itemLabel="Caries" itemValue="caries" />
-						<f:selectItem itemLabel="Prótesis Dental" itemValue="protesis" />
-						<f:selectItem itemLabel="Restauración" itemValue="restauracion" />
-						<f:selectItem itemLabel="Extracción" itemValue="extraccion" />
-	
-						<p:ajax event="valueChange"
-							listener="#{odontogramaBean.onServicioChange}" process="@form"
-							update="formServicio:panelDinamico" />
-	
-					</p:selectOneMenu>
-	
-					<p:outputPanel id="panelDinamico"
-						style="width:90%; margin-bottom:20px">
-	
-						<!-- ========= IMPLANTE ========= -->
-						<p:outputPanel
-							rendered="#{odontogramaBean.servicioSeleccionado eq 'implante'}">
-							<div class="implanteContenedor">
-								<div class="implanteCard">
-									<div>
-										<p>Implante Dental</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="IMP" process="@form"
-											styleClass="implanteBtnAzul"
-											update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
-										<p:commandButton value="IMP" process="@form"
-											styleClass="implanteBtnRojo"
-											update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
-									</div>
+		<h:form id="formServicio">
+			<div
+				style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+				<p:selectOneMenu id="servicio"
+					value="#{odontogramaBean.servicioSeleccionado}"
+					style="width:90%; margin-bottom:20px">
+
+					<f:selectItem itemLabel="Seleccione..." itemValue=""
+						noSelectionOption="true" />
+					<f:selectItem itemLabel="Implante" itemValue="implante" />
+					<f:selectItem itemLabel="Caries" itemValue="caries" />
+					<f:selectItem itemLabel="Diente Ausente" itemValue="dienteAusente" />
+					<f:selectItem itemLabel="Protesis Dental"
+						itemValue="protesisDental" />
+					<f:selectItem itemLabel="Restauración" itemValue="restauracion" />
+					<f:selectItem itemLabel="Extracción" itemValue="extraccion" />
+
+					<p:ajax event="valueChange"
+						listener="#{odontogramaBean.onServicioChange}" process="@form"
+						update="formServicio:panelDinamico" />
+
+				</p:selectOneMenu>
+
+				<p:outputPanel id="panelDinamico"
+					style="width:90%; margin-bottom:20px">
+
+					<!-- ========= IMPLANTE ========= -->
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'implante'}">
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Implante Dental</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="IMP" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
+									<p:commandButton value="IMP" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IMP')}" />
 								</div>
 							</div>
-						</p:outputPanel>
-	
-						<!-- ========= CARIES ========= -->
-						<p:outputPanel
-							rendered="#{odontogramaBean.servicioSeleccionado eq 'caries'}">
-							<div class="cariesContenedor">
-								<div class="cariesCard">
-									<div>
-										<p>Caries Dental</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="" process="@form"
-											styleClass="cariesBtnRojoFull"
-											update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('CD')}" />
-									</div>
-								</div>
-							</div>
-							<div class="cariesContenedor">
-								<div class="cariesCard">
-									<div>
-										<p>Caries Recurrente</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="" process="@form"
-											styleClass="cariesBtnRojoAzul"
-											update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('CR')}" />
-									</div>
-								</div>
-							</div>
-							<div class="cariesContenedor">
-								<div class="cariesCard">
-									<div>
-										<p>Caries a Nivel del Esmalte</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="CE" process="@form"
-											styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('CE')}" />
-									</div>
-								</div>
-							</div>
-							<div class="cariesContenedor">
-								<div class="cariesCard">
-									<div>
-										<p>Caries a Nivel de la Dentina</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="CD" process="@form"
-											styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('CD')}" />
-									</div>
-								</div>
-							</div>
-							<div class="cariesContenedor">
-								<div class="cariesCard">
-									<div>
-										<p>Caries a Nivel de la Pulpa</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="CDP" process="@form"
-											styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('CDP')}" />
-									</div>
-								</div>
-							</div>
-							<div class="cariesContenedor">
-								<div class="cariesCard">
-									<div>
-										<p>Mancha Blanca</p>
-									</div>
-									<div class="cariesBtncontainer">
-										<p:commandButton value="MB" process="@form"
-											styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
-											actionListener="#{odontogramaBean.setSubtipoSeleccionado('MB')}" />
-									</div>
-								</div>
-							</div>
-						</p:outputPanel>
-	
-						<!-- ========= PRÓTESIS DENTAL ========= -->
-						<p:outputPanel
-							rendered="#{odontogramaBean.servicioSeleccionado eq 'protesis'}">
-							<div
-								style="padding: 20px; border: 1px solid #ddd; border-radius: 4px; background: #f9f9f9;">
-								<h3 style="margin-top: 0;">Opciones para Prótesis Dental</h3>
-								<div style="display: flex; gap: 10px; flex-wrap: wrap;">
-									<p:commandButton value="Prótesis Fija"
-										styleClass="#{odontogramaBean.subtipoSeleccionado eq 'protesis_fija' ? 'activo' : ''}"
-										process="@form" update="formServicio:panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('protesis_fija')}" />
-	
-									<p:commandButton value="Prótesis Removible"
-										styleClass="#{odontogramaBean.subtipoSeleccionado eq 'protesis_removible' ? 'activo' : ''}"
-										process="@form" update="formServicio:panelDinamico"
-										actionListener="#{odontogramaBean.setSubtipoSeleccionado('protesis_removible')}" />
-								</div>
-							</div>
-						</p:outputPanel>
-	
-						<p:outputPanel
-							rendered="#{empty odontogramaBean.servicioSeleccionado}">
-							<div style="padding: 20px; text-align: center; color: #666;">
-								Por favor, seleccione un servicio para ver las opciones
-								disponibles.</div>
-						</p:outputPanel>
-	
+						</div>
 					</p:outputPanel>
-	
-					<p:commandButton value="Aceptar" icon="pi pi-check"
-						style="width:50%;" action="#{odontogramaBean.guardarServicio}"
-						update="@form" oncomplete="PF('dlgServicio').hide();" />
-	
-				</div>
-			</h:form>
+
+					<!-- ========= CARIES ========= -->
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'caries'}">
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries Dental</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="" process="@form"
+										styleClass="cariesBtnRojoFull"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CD')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries Recurrente</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="" process="@form"
+										styleClass="cariesBtnRojoAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CR')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries a Nivel del Esmalte</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="CE" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CE')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries a Nivel de la Dentina</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="CD" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CD')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Caries a Nivel de la Pulpa</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="CDP" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('CDP')}" />
+								</div>
+							</div>
+						</div>
+						<div class="cariesContenedor">
+							<div class="cariesCard">
+								<div>
+									<p>Mancha Blanca</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="MB" process="@form"
+										styleClass="cariesBtnRojo" update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('MB')}" />
+								</div>
+							</div>
+						</div>
+					</p:outputPanel>
+
+					<!-- ========= DIENTE AUSENTE ========= -->
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'dienteAusente'}">
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Diente Extraído por Caries</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="DEX" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('DEX')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Diente No Erupcionado</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="DNE" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('DNE')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Diente Ausente por Otra Razón</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="DAO" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('DAO')}" />
+								</div>
+							</div>
+						</div>
+					</p:outputPanel>
+
+					<!-- ========= PROTESIS DENTAL ========= -->
+
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'protesisDental'}">
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Prótesis Dental</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="P" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+									<p:commandButton value="P" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Prótesis Dental Parcial Fija</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="--" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+									<p:commandButton value="--" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Prótesis Dental Completa Superior / Inferior</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="=" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+									<p:commandButton value="=" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Prótesis Dental Parcial Removible</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="*=" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+									<p:commandButton value="*=" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('P')}" />
+								</div>
+							</div>
+						</div>
+					</p:outputPanel>
+					
+					<!-- ========= RESTAURACION ========= -->
+
+					<p:outputPanel
+						rendered="#{odontogramaBean.servicioSeleccionado eq 'restauracion'}">						
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Amalgama Dental</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="AM" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('AM')}" />
+									<p:commandButton value="AM" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('AM')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Resina</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="R" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('R')}" />
+									<p:commandButton value="R" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('R')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Iónomero de Vidrio</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="IV" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IV')}" />
+									<p:commandButton value="IV" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IV')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Incrustación Metálica</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="IM" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IM')}" />
+									<p:commandButton value="IM" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IM')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Incrustación Estética</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="IE" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IE')}" />
+									<p:commandButton value="IE" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('IE')}" />
+								</div>
+							</div>
+						</div>
+						<div class="implanteContenedor">
+							<div class="implanteCard">
+								<div>
+									<p>Carilla</p>
+								</div>
+								<div class="cariesBtncontainer">
+									<p:commandButton value="C" process="@form"
+										styleClass="implanteBtnAzul"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('C')}" />
+									<p:commandButton value="C" process="@form"
+										styleClass="implanteBtnRojo"
+										update="formServicio:panelDinamico"
+										actionListener="#{odontogramaBean.setSubtipoSeleccionado('C')}" />
+								</div>
+							</div>
+						</div>
+					</p:outputPanel>
+
+
+					<p:outputPanel
+						rendered="#{empty odontogramaBean.servicioSeleccionado}">
+						<div style="padding: 20px; text-align: center; color: #666;">
+							Por favor, seleccione un servicio para ver las opciones
+							disponibles.</div>
+					</p:outputPanel>
+
+				</p:outputPanel>
+
+				<p:commandButton value="Aceptar" icon="pi pi-check"
+					style="width:50%;" action="#{odontogramaBean.guardarServicio}"
+					update="@form" oncomplete="PF('dlgServicio').hide();" />
+
+			</div>
+		</h:form>
 	</p:dialog>
 
 </ui:composition>
