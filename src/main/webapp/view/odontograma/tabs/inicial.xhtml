@@ -125,6 +125,18 @@
 	<div class="hallazgos hallazgos-update-region">
 		<p:fieldset legend="Registro de Hallazgos">
 			<h:form id="formHallazgos">
+
+
+				<p:remoteCommand name="guardarServicioBean"
+					actionListener="#{odontogramaBean.guardarServicioCompleto()}"
+					update="@form" />
+
+	
+
+				<p:remoteCommand name="enviarDiente"
+					actionListener="#{odontogramaBean.setDienteSeleccionado(param.dienteSeleccionado)}" />
+
+
 				<p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
 					styleClass="registro-hallazgos-table" editable="true">
 					<p:column headerText="N° Pieza Dental">
@@ -153,6 +165,7 @@
 			</h:form>
 		</p:fieldset>
 	</div>
+
 	<!-- ===== EVALUACIÓN ODONTOLÓGICA ===== -->
 	<div class="evaluacion-section">
 		<p:fieldset legend="Evaluación Odontológica"
@@ -569,14 +582,6 @@
 
 
 
-			<p:remoteCommand name="enviarDiente"
-				actionListener="#{odontogramaBean.setDienteSeleccionado(param.dienteSeleccionado)}"
-				oncomplete="window.dienteSeleccionado = '#{odontogramaBean.dienteSeleccionado}';" />
-
-
-			<p:remoteCommand name="guardarServicioBean"
-				action="#{odontogramaBean.guardarServicioCompleto}"
-				update="@(.hallazgos-update-region)" />
 
 			<h:outputScript>
             function toggleServicio(header){

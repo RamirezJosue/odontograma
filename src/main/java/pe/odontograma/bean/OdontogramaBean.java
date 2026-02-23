@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-import org.primefaces.PrimeFaces;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class OdontogramaBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -34,59 +34,69 @@ public class OdontogramaBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		hallazgos = new ArrayList<>();
-		hallazgos.add(new Hallazgo("18", "Caries", "CE", "M,D", 1, "Caries en esmalte"));
-		hallazgos.add(new Hallazgo("16", "Restauración", "AM", "O,V1", 1, "Amalgama en oclusal"));
 		System.out.println("=== OdontogramaBean inicializado ===");
 	}
 
-	public void guardarServicioCompleto() {
-		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+	public String guardarServicioCompleto() {
+	    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
-		String tipo = params.getOrDefault("hallazgoTipo", "");
-		String codigo = params.getOrDefault("hallazgoCodigo", "");
-		String sups = params.getOrDefault("numDientes", "");
-		String diente = params.getOrDefault("dienteId", dienteSeleccionado != null ? dienteSeleccionado : "");
-		String colorParam = params.getOrDefault("colorServicio", "");
+	    String tipo = params.getOrDefault("hallazgoTipo", "");
+	    String codigo = params.getOrDefault("hallazgoCodigo", "");
+	    String sups = params.getOrDefault("numDientes", "");
+	    String diente = params.getOrDefault("dienteId", dienteSeleccionado != null ? dienteSeleccionado : "");
+	    String colorParam = params.getOrDefault("colorServicio", "");
 
-		System.out.println("=== guardarServicioCompleto ===");
-		System.out.println("  Diente    : " + diente);
-		System.out.println("  Tipo      : " + tipo);
-		System.out.println("  Código    : " + codigo);
-		System.out.println("  numDientes: " + sups);
-		System.out.println("  Color     : " + colorParam);
+	    System.out.println("=== guardarServicioCompleto ===");
+	    System.out.println("  Diente    : " + diente);
+	    System.out.println("  Tipo      : " + tipo);
+	    System.out.println("  Código    : " + codigo);
 
-		if (diente == null || diente.trim().isEmpty()) {
-			System.out.println("  WARN: Diente vacío, ignorado.");
-			return;
-		}
-		if (tipo == null || tipo.trim().isEmpty()) {
-			System.out.println("  WARN: Tipo vacío, ignorado.");
-			return;
-		}
+	    if (diente == null || diente.trim().isEmpty()) {
+	        System.out.println("  WARN: Diente vacío, ignorado.");
+	        return null;
+	    }
+	    if (tipo == null || tipo.trim().isEmpty()) {
+	        System.out.println("  WARN: Tipo vacío, ignorado.");
+	        return null;
+	    }
 
-		this.dienteSeleccionado = diente;
-		this.hallazgoTipo = tipo;
-		this.hallazgoCodigo = codigo;
-		this.numDientes = sups;
-		if (!colorParam.isEmpty())
-			this.colorServicio = colorParam;
+	    this.dienteSeleccionado = diente;
+	    this.hallazgoTipo = tipo;
+	    this.hallazgoCodigo = codigo;
+	    this.numDientes = sups;
+	    if (!colorParam.isEmpty())
+	        this.colorServicio = colorParam;
 
-		Hallazgo nuevo = new Hallazgo();
-		nuevo.setPiezaDental(diente);
-		nuevo.setHallazgo(tipo);
-		nuevo.setCodigo(codigo);
-		nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
-		nuevo.setCantidad(1);
-		nuevo.setNota(buildNota(tipo, codigo, sups));
+	    Hallazgo nuevo = new Hallazgo();
+	    nuevo.setPiezaDental(diente);
+	    nuevo.setHallazgo(buildHallazgoNombre(tipo));
+	    nuevo.setCodigo(codigo);
+	    nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
+	    nuevo.setCantidad(1);
+	    nuevo.setNota(buildNota(tipo, codigo, sups));
 
-		hallazgos.removeIf(h -> h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
-				&& h.getHallazgo() != null && h.getHallazgo().equals(tipo));
+	    hallazgos.removeIf(h -> h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
+	            && h.getHallazgo() != null && h.getHallazgo().equals(tipo));
 
-		hallazgos.add(nuevo);
+	    hallazgos.add(nuevo);
 
-		System.out.println("  ✅ Hallazgo agregado. Total: " + hallazgos.size());
+	    System.out.println("  Hallazgo agregado. Total: " + hallazgos.size());
+	    return null;
 	}
 
+	
+	private String buildHallazgoNombre(String tipo) {
+	    switch (tipo) {
+	        case "caries":        return "Caries";
+	        case "restauracion":  return "Restauración";
+	        case "implante":      return "Implante";
+	        case "dienteAusente": return "Diente Ausente";
+	        case "extraccion":    return "Extracción";
+	        case "protesis":      return "Prótesis";
+	        default:              return tipo;
+	    }
+	}
+	
 	private String buildNota(String tipo, String codigo, String sups) {
 		StringBuilder sb = new StringBuilder();
 		switch (tipo) {

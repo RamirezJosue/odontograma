@@ -859,10 +859,10 @@ function guardarCaries() {
 
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
-			{ name: 'servicioTipo',  value: 'caries' },
-			{ name: 'servicioCodigo', value: cariesActual.codigo },
-			{ name: 'superficies',   value: cariesActual.superficies.sort().join(',') },
-			{ name: 'dienteId',      value: dienteSeleccionado }
+		    { name: 'hallazgoTipo',   value: 'caries' },
+		    { name: 'hallazgoCodigo', value: cariesActual.codigo },
+		    { name: 'numDientes',     value: cariesActual.superficies.sort().join(',') },
+		    { name: 'dienteId',       value: dienteSeleccionado }
 		]);
 	}
 	volverAlPanelServicios();
@@ -892,11 +892,11 @@ function guardarRestauracion() {
 
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
-			{ name: 'servicioTipo',   value: 'restauracion' },
-			{ name: 'servicioCodigo', value: restauracionActual.codigo },
-			{ name: 'colorServicio',  value: restauracionActual.color },
-			{ name: 'superficies',    value: restauracionActual.superficies.sort().join(',') },
-			{ name: 'dienteId',       value: dienteSeleccionado }
+		    { name: 'hallazgoTipo',   value: 'restauracion' },
+		    { name: 'hallazgoCodigo', value: restauracionActual.codigo },
+		    { name: 'colorServicio',  value: restauracionActual.color },
+		    { name: 'numDientes',     value: restauracionActual.superficies.sort().join(',') },
+		    { name: 'dienteId',       value: dienteSeleccionado }
 		]);
 	}
 	volverAlPanelServicios();
@@ -956,10 +956,10 @@ function aplicarImplante(estado) {
 	}
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
-			{ name: 'servicioTipo',   value: 'implante' },
-			{ name: 'servicioCodigo', value: estado === 'bueno' ? 'IMPA' : 'IMPR' },
-			{ name: 'superficies',    value: '' },
-			{ name: 'dienteId',       value: dienteSeleccionado }
+		    { name: 'hallazgoTipo',   value: 'implante' },
+		    { name: 'hallazgoCodigo', value: estado === 'bueno' ? 'IMPA' : 'IMPR' },
+		    { name: 'numDientes',     value: '' },
+		    { name: 'dienteId',       value: dienteSeleccionado }
 		]);
 	}
 	if (typeof PF === 'function') PF('dlgServicio').hide();
@@ -1003,10 +1003,10 @@ function aplicarDienteAusente(codigo) {
 	}
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
-			{ name: 'servicioTipo',   value: 'dienteAusente' },
-			{ name: 'servicioCodigo', value: codigo },
-			{ name: 'superficies',    value: '' },
-			{ name: 'dienteId',       value: dienteSeleccionado }
+		    { name: 'hallazgoTipo',   value: 'dienteAusente' },
+		    { name: 'hallazgoCodigo', value: codigo },
+		    { name: 'numDientes',     value: '' },
+		    { name: 'dienteId',       value: dienteSeleccionado }
 		]);
 	}
 	if (typeof PF === 'function') PF('dlgServicio').hide();
@@ -1049,9 +1049,9 @@ function aplicarExtraccion() {
 	}
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
-			{ name: 'servicioTipo',   value: 'extraccion' },
-			{ name: 'servicioCodigo', value: 'EX' },
-			{ name: 'superficies',    value: '' },
+			{ name: 'hallazgoTipo',   value: 'extraccion' },
+			{ name: 'hallazgoCodigo', value: 'EX' },
+			{ name: 'numDientes',    value: '' },
 			{ name: 'dienteId',       value: dienteSeleccionado }
 		]);
 	}
@@ -1090,10 +1090,10 @@ function aplicarProtesis(simbolo, estado) {
 
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
-			{ name: 'servicioTipo',   value: 'protesis' },
-			{ name: 'servicioCodigo', value: simbolo },
-			{ name: 'superficies',    value: '' },
-			{ name: 'dienteId',       value: dienteSeleccionado }
+		    { name: 'hallazgoTipo',   value: 'protesis' },
+		    { name: 'hallazgoCodigo', value: simbolo },
+		    { name: 'numDientes',     value: '' },
+		    { name: 'dienteId',       value: dienteSeleccionado }
 		]);
 	}
 }
