@@ -5,6 +5,7 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 	<h:outputStylesheet>
+	
     /* ===== LAYOUT GENERAL ===== */
     .odontograma-flex { display:flex; justify-content:space-between; margin-bottom:2rem; }
     .flex-left, .flex-right { width:48%; }
@@ -129,14 +130,14 @@
 					<p:column headerText="N° Pieza Dental">
 						<h:outputText value="#{h.piezaDental}" />
 					</p:column>
-					<p:column headerText="Servicio">
-						<h:outputText value="#{h.tipo}" />
+					<p:column headerText="Hallazgo">
+						<h:outputText value="#{h.hallazgo}" />
 					</p:column>
 					<p:column headerText="Código">
-						<h:outputText value="#{h.descripcion}" />
+						<h:outputText value="#{h.codigo}" />
 					</p:column>
-					<p:column headerText="Superficies">
-						<h:outputText value="#{h.superficies}" />
+					<p:column headerText="N° Dientes">
+						<h:outputText value="#{h.numDientes}" />
 					</p:column>
 					<p:column headerText="Nota">
 						<p:inputTextarea value="#{h.nota}" autoResize="true" />
@@ -152,7 +153,6 @@
 			</h:form>
 		</p:fieldset>
 	</div>
-
 	<!-- ===== EVALUACIÓN ODONTOLÓGICA ===== -->
 	<div class="evaluacion-section">
 		<p:fieldset legend="Evaluación Odontológica"
@@ -240,9 +240,7 @@
 		</p:fieldset>
 	</div>
 
-	<!-- ===================================================
-     p:dialog PRINCIPAL - Toda la lógica JS se inyecta aquí
-     =================================================== -->
+
 	<p:dialog id="dlgServicio" widgetVar="dlgServicio"
 		header="Odontograma - Seleccione Servicio" modal="true" width="680"
 		appendTo="@(body)" responsive="true" resizable="false"
@@ -251,15 +249,13 @@
 
 		<h:form id="formServicio">
 
-			<!-- Barra de info del diente activo -->
+
 			<div id="dienteInfoHeader" class="diente-info-bar">Diente: —</div>
 
-			<!-- =========================================================
-             PANEL PRINCIPAL DE SERVICIOS (visible por defecto)
-             ========================================================= -->
+
 			<div id="panelServiciosPF" style="display: block;">
 
-				<!-- IMPLANTE -->
+
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Implante</span><span class="flecha">▼</span>
@@ -277,7 +273,6 @@
 					</div>
 				</div>
 
-				<!-- CARIES -->
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Caries</span><span class="flecha">▼</span>
@@ -331,7 +326,6 @@
 					</div>
 				</div>
 
-				<!-- DIENTE AUSENTE -->
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Diente Ausente</span><span class="flecha">▼</span>
@@ -363,7 +357,6 @@
 					</div>
 				</div>
 
-				<!-- PRÓTESIS DENTAL -->
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Prótesis Dental</span><span class="flecha">▼</span>
@@ -411,7 +404,6 @@
 					</div>
 				</div>
 
-				<!-- RESTAURACIÓN -->
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Restauración</span><span class="flecha">▼</span>
@@ -474,7 +466,6 @@
 					</div>
 				</div>
 
-				<!-- EXTRACCIÓN -->
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Extracción</span><span class="flecha">▶</span>
@@ -491,12 +482,10 @@
 				</div>
 
 			</div>
-			<!-- /panelServiciosPF -->
 
 
-			<!-- =========================================================
-             VISOR DE CARIES (oculto por defecto)
-             ========================================================= -->
+
+
 			<div id="cariesVisorContainer" class="visor-container"
 				style="display: none;">
 				<div class="visor-header">
@@ -534,12 +523,10 @@
 						Cancelar</button>
 				</div>
 			</div>
-			<!-- /cariesVisorContainer -->
 
 
-			<!-- =========================================================
-             VISOR DE RESTAURACIÓN (oculto por defecto)
-             ========================================================= -->
+
+
 			<div id="restauracionVisorContainer" class="visor-container"
 				style="display: none;">
 				<div class="visor-header">
@@ -578,25 +565,19 @@
 						Cancelar</button>
 				</div>
 			</div>
-			<!-- /restauracionVisorContainer -->
 
 
-			<!-- =========================================================
-             remoteCommands para comunicación con el Bean
-             ========================================================= -->
 
-			<!-- 1. Recibe el número de diente al hacer clic en el SVG -->
+
 			<p:remoteCommand name="enviarDiente"
 				actionListener="#{odontogramaBean.setDienteSeleccionado(param.dienteSeleccionado)}"
 				oncomplete="window.dienteSeleccionado = '#{odontogramaBean.dienteSeleccionado}';" />
 
-			<!-- 2. Guarda el servicio completo (tipo, código, superficies, diente) -->
-			<!-- update usa selector CSS @(...) para resolver el ID aunque esté en otro naming container -->
+
 			<p:remoteCommand name="guardarServicioBean"
 				action="#{odontogramaBean.guardarServicioCompleto}"
 				update="@(.hallazgos-update-region)" />
 
-			<!-- helper JS para el toggle de secciones -->
 			<h:outputScript>
             function toggleServicio(header){
                 var body=header.nextElementSibling, flecha=header.querySelector('.flecha');
