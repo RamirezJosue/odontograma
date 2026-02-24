@@ -67,16 +67,18 @@ public class OdontogramaBean implements Serializable {
 	    if (!colorParam.isEmpty())
 	        this.colorServicio = colorParam;
 
+	    String hallazgoNombre = buildHallazgoNombre(tipo);
+
+	    hallazgos.removeIf(h -> h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
+	            && h.getHallazgo() != null && h.getHallazgo().equals(hallazgoNombre));
+
 	    Hallazgo nuevo = new Hallazgo();
 	    nuevo.setPiezaDental(diente);
-	    nuevo.setHallazgo(buildHallazgoNombre(tipo));
+	    nuevo.setHallazgo(hallazgoNombre);
 	    nuevo.setCodigo(codigo);
 	    nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
 	    nuevo.setCantidad(1);
 	    nuevo.setNota(buildNota(tipo, codigo, sups));
-
-	    hallazgos.removeIf(h -> h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
-	            && h.getHallazgo() != null && h.getHallazgo().equals(tipo));
 
 	    hallazgos.add(nuevo);
 
@@ -134,12 +136,23 @@ public class OdontogramaBean implements Serializable {
 		System.out.println("Diente capturado: " + dienteSeleccionado);
 	}
 
+	public String recibirDiente() {
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		String diente = params.get("dienteSeleccionado");
+		if (diente != null && !diente.trim().isEmpty()) {
+			this.dienteSeleccionado = diente.trim();
+			System.out.println("Diente recibido via remoteCommand: " + this.dienteSeleccionado);
+		}
+		return null;
+	}
+
 	public String getDienteSeleccionado() {
 		return dienteSeleccionado;
 	}
 
-	public void adicionarHallazgo() {
+	public String adicionarHallazgo() {
 		hallazgos.add(new Hallazgo());
+		return null;
 	}
 
 	public int getTotalHallazgos() {

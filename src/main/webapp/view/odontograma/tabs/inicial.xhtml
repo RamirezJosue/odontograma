@@ -128,17 +128,21 @@
 
 
 				<p:remoteCommand name="guardarServicioBean"
-					actionListener="#{odontogramaBean.guardarServicioCompleto()}"
-					update="@form" />
+					action="#{odontogramaBean.guardarServicioCompleto}"
+					process="@this"
+					update="tablaHallazgos totalPanel"
+					oncomplete="console.log('[AJAX] guardarServicioBean complete')" />
 
 	
 
 				<p:remoteCommand name="enviarDiente"
-					actionListener="#{odontogramaBean.setDienteSeleccionado(param.dienteSeleccionado)}" />
+					action="#{odontogramaBean.recibirDiente}"
+					process="@this" />
 
 
-				<p:dataTable value="#{odontogramaBean.hallazgos}" var="h"
-					styleClass="registro-hallazgos-table" editable="true">
+				<p:dataTable id="tablaHallazgos" value="#{odontogramaBean.hallazgos}" var="h"
+					styleClass="registro-hallazgos-table" editable="true"
+					emptyMessage="No hay hallazgos registrados.">
 					<p:column headerText="N° Pieza Dental">
 						<h:outputText value="#{h.piezaDental}" />
 					</p:column>
@@ -158,8 +162,9 @@
 				<br />
 				<p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
 					action="#{odontogramaBean.adicionarHallazgo}"
-					update="@(.hallazgos-update-region)" />
-				<h:panelGroup style="margin-left:20px">
+					process="@this"
+					update="tablaHallazgos totalPanel" />
+				<h:panelGroup id="totalPanel" style="margin-left:20px">
 					<strong>Total:</strong> #{odontogramaBean.totalHallazgos}
             </h:panelGroup>
 			</h:form>
