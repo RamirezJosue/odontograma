@@ -4,7 +4,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-	<h:outputStylesheet>
+<h:outputStylesheet>
 	
     /* ===== LAYOUT GENERAL ===== */
     .odontograma-flex { display:flex; justify-content:space-between; margin-bottom:2rem; }
@@ -12,7 +12,7 @@
     .hallazgos { margin-bottom:2rem; }
     .registro-hallazgos-table { width:100%; }
     .evaluacion-section { width:100%; margin-top:20px; }
-    .evaluacion-fieldset { border:1px solid #ddd; padding:20px; border-radius:8px; background-color:#f9f9f9; }
+    .evaluacion-fieldset { border:1px solid #ddd; padding:20px; border-radius:8px;}
     .evaluacion-combo-container { margin-bottom:20px; }
     .evaluacion-combo-container label { display:block; margin-bottom:8px; font-weight:bold; color:#333; }
     .evaluacion-container { display:flex; flex-direction:column; gap:20px; }
@@ -91,11 +91,40 @@
     .btn-volver:hover { background:#f0f0f0; }
 </h:outputStylesheet>
 
+	<div class="evaluacion-odontologica">
+		<p:fieldset legend="Evaluación Odontológica">
+			<div class="evaluacion-subsection" style="margin: 1rem 0;">
+				<h:outputLabel for="motivoConsulta" value="Motivo De Consulta" />
+				<p:inputTextarea id="motivoConsulta" rows="5" />
+			</div>
+			<div class="evaluacion-subsection" style="margin: 1rem 0;">
+				<h:outputLabel for="inicio" value="Inicio" />
+				<p:inputTextarea id="inicio" rows="5" />
+			</div>
+			<div class="evaluacion-subsection" style="margin: 1rem 0;">
+				<h:outputLabel for="antecedentesPersonales" value="Antecedentes Personales" />
+				<p:inputTextarea id="antecedentesPersonales" rows="5" />
+			</div>
+			<div class="evaluacion-subsection" style="margin: 1rem 0;">
+				<h:outputLabel for="antecedentesFamiliares" value="Antecedentes Familiares" />
+				<p:inputTextarea id="antecedentesFamiliares" rows="5" />
+			</div>
+			<div class="evaluacion-subsection" style="margin: 1rem 0;">
+				<h:outputLabel for="alergias" value="Alergias / Intolerancias" />
+				<p:inputTextarea id="alergias" rows="5" />
+			</div>
+			<div class="evaluacion-subsection" style="margin: 1rem 0;">
+				<h:outputLabel for="tratamientosPrevios" value="AntecTratamientos Previos" />
+				<p:inputTextarea id="tratamientosPrevios" rows="5" />
+			</div>
+		</p:fieldset>
+	</div>
+
 	<!-- ===== SELECTOR DENTICIÓN Y FECHA ===== -->
-	<div class="odontograma-flex">
+	<div class="odontograma-flex" style="margin: 1rem 0;">
 		<div class="flex-left">
 			<h:form id="formDenticion">
-				<p:fieldset legend="Seleccione el Tipo de Dentición">
+				<p:fieldset legend="Tipo de Dentición">
 					<p:selectOneRadio id="denticionRadio"
 						value="#{odontogramaBean.tipoDenticion}"
 						onchange="tipoDenticion = this.value; actualizarOdontograma();">
@@ -108,7 +137,7 @@
 			</h:form>
 		</div>
 		<div class="flex-right">
-			<p:fieldset legend="Seleccione la Fecha de Creación">
+			<p:fieldset legend="Fecha de Creación">
 				<p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
 			</p:fieldset>
 		</div>
@@ -171,13 +200,11 @@
 		</p:fieldset>
 	</div>
 
-	<!-- ===== EVALUACIÓN ODONTOLÓGICA ===== -->
-	<div class="evaluacion-section">
-		<p:fieldset legend="Evaluación Odontológica"
-			styleClass="evaluacion-fieldset">
+	<!-- ===== Diagnósticos  ===== -->
+	<div class="diagnostico-section" style="margin: 1rem 0;">
+		<p:fieldset legend="Diagnósticos" styleClass="evaluacion-fieldset">
 			<div class="evaluacion-combo-container">
-				<h:outputLabel for="diagnosticoCombo"
-					value="Seleccione Diagnóstico CIE-10:" />
+				<h:outputLabel for="diagnosticoCombo" value="Seleccione Diagnóstico CIE-10:" />
 				<p:selectOneMenu id="diagnosticoCombo" filter="true"
 					filterMatchMode="contains" panelStyle="width:400px">
 					<f:selectItem itemLabel="Seleccione..." itemValue=""
@@ -215,49 +242,29 @@
 						itemValue="K14" />
 				</p:selectOneMenu>
 			</div>
-			<div class="evaluacion-container">
-				<div class="evaluacion-superior">
-					<div class="evaluacion-subsection">
-						<h:outputLabel for="especificaciones" value="Especificaciones:" />
-						<p:inputTextarea id="especificaciones" rows="5" cols="50"
-							autoResize="true" placeholder="Ingrese las especificaciones..."
-							styleClass="evaluacion-textarea" />
-					</div>
-					<div class="evaluacion-subsection">
-						<h:outputLabel for="diagnostico" value="Diagnóstico:" />
-						<p:inputTextarea id="diagnostico" rows="5" cols="50"
-							autoResize="true"
-							placeholder="Ingrese el diagnóstico del paciente..."
-							styleClass="evaluacion-textarea" />
-					</div>
-				</div>
-				<div class="evaluacion-inferior">
-					<div class="evaluacion-subsection">
-						<h:outputLabel for="observaciones" value="Observaciones:" />
-						<p:inputTextarea id="observaciones" rows="5" cols="50"
-							autoResize="true" placeholder="Ingrese sus observaciones..."
-							styleClass="evaluacion-textarea" />
-					</div>
-					<div class="evaluacion-subsection">
-						<h:outputLabel for="planTrabajo" value="Plan de Trabajo:" />
-						<p:inputTextarea id="planTrabajo" rows="5" cols="50"
-							autoResize="true" placeholder="Ingrese el plan de trabajo..."
-							styleClass="evaluacion-textarea" />
-					</div>
-				</div>
-			</div>
+
+			<p:dataTable id="tablaDiagnostico" styleClass="registro-hallazgos-table" emptyMessage="No hay diagnósticos registrados.">
+				<p:column headerText="N°" />
+				<p:column headerText="CIE-10" />
+				<p:column headerText="Diagnóstico" />
+				<p:column headerText="Detalle" />
+				<p:column headerText="Acciones" />
+			</p:dataTable>
+			
 			<div style="margin-top: 20px; text-align: right;">
-				<p:commandButton value="Guardar Evaluación" icon="pi pi-save"
-					styleClass="ui-button-success" disabled="true" />
-				<p:commandButton value="Limpiar" icon="pi pi-trash"
-					styleClass="ui-button-secondary" style="margin-left:10px;"
-					disabled="true" />
-				<p:commandButton value="Imprimir" icon="pi pi-print"
-					style="margin-left:10px;" disabled="true" />
+				<p:commandButton value="Guardar Evaluación" icon="pi pi-save" styleClass="ui-button-success" disabled="true" />
+				<p:commandButton value="Limpiar" icon="pi pi-trash" styleClass="ui-button-secondary" style="margin-left:10px;" disabled="true" />
+				<p:commandButton value="Imprimir" icon="pi pi-print" style="margin-left:10px;" disabled="true" />
 			</div>
 		</p:fieldset>
 	</div>
 
+	<div class="planTrabajo-section" style="margin: 1rem 0;">		
+			<div class="evaluacion-subsection">
+				<h:outputLabel for="planTrabajo" value="Plan de Trabajo" />
+				<p:inputTextarea id="planTrabajo" rows="5" cols="20" autoResize="true" placeholder="Ingrese el plan de trabajo..." styleClass="evaluacion-textarea" />
+			</div>
+	</div>				
 
 	<p:dialog id="dlgServicio" widgetVar="dlgServicio"
 		header="Odontograma - Seleccione Servicio" modal="true" width="680"
@@ -498,10 +505,7 @@
 						</div>
 					</div>
 				</div>
-
 			</div>
-
-
 
 
 			<div id="cariesVisorContainer" class="visor-container"
@@ -542,9 +546,6 @@
 				</div>
 			</div>
 
-
-
-
 			<div id="restauracionVisorContainer" class="visor-container"
 				style="display: none;">
 				<div class="visor-header">
@@ -583,10 +584,6 @@
 						Cancelar</button>
 				</div>
 			</div>
-
-
-
-
 
 			<h:outputScript>
             function toggleServicio(header){

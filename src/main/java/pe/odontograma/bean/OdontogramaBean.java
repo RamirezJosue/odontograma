@@ -1,15 +1,15 @@
 package pe.odontograma.bean;
 
 import pe.odontograma.model.Hallazgo;
+import pe.odontograma.model.Paciente;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 @ManagedBean
@@ -31,9 +31,22 @@ public class OdontogramaBean implements Serializable {
 	private String servicioSeleccionado;
 	private String subtipoSeleccionado;
 
+	private Paciente paciente;
+
 	@PostConstruct
 	public void init() {
+		paciente = new Paciente();
 		hallazgos = new ArrayList<>();
+
+		paciente.setApellidosNombres("GARCIA PEREZ, JUAN CARLOS");
+		paciente.setDocumento("12345678");
+		paciente.setFechaNacimiento(new Date()); // En producción, esto vendría de BD
+		paciente.setGenero("Masculino");
+		paciente.setCorreo("juan.perez@email.com");
+		paciente.setCelular("987654321");
+		paciente.setSucursal("PRINCIPAL");
+		paciente.setFechaAdmision(new Date());
+
 		System.out.println("=== OdontogramaBean inicializado ===");
 	}
 
@@ -229,5 +242,13 @@ public class OdontogramaBean implements Serializable {
 
 	public void setSubtipoSeleccionado(String s) {
 		this.subtipoSeleccionado = s;
+	}
+
+	public Paciente getPaciente() {
+    	return paciente;
+	}
+
+	public void setPaciente(Paciente paciente) {
+		this.paciente = paciente;
 	}
 }
