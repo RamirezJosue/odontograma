@@ -2,8 +2,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	>
 <h:outputStylesheet>
 	
     /* ===== LAYOUT GENERAL ===== */
@@ -156,26 +156,29 @@
 
         <h:form id="formAdicionar">
 
-            <p:dataTable id="tablaHallazgos" 
-                value="#{odontogramaBean.hallazgos}" var="h"
-                styleClass="registro-hallazgos-table" editable="true"
-                emptyMessage="No hay hallazgos registrados.">
-                <p:column headerText="N° Pieza Dental">
-                    <h:outputText value="#{h.piezaDental}" />
-                </p:column>
-                <p:column headerText="Hallazgo">
-                    <h:outputText value="#{h.hallazgo}" />
-                </p:column>
-                <p:column headerText="Código">
-                    <h:outputText value="#{h.codigo}" />
-                </p:column>
-                <p:column headerText="N° Dientes">
-                    <h:outputText value="#{h.numDientes}" />
-                </p:column>
-                <p:column headerText="Nota">
-                    <p:inputTextarea value="#{h.nota}" autoResize="true" />
-                </p:column>
-            </p:dataTable>
+            <p:dataTable id="tablaHallazgos" value="#{odontogramaBean.hallazgos}" var="h" styleClass="registro-hallazgos-table" editable="true" emptyMessage="No hay hallazgos registrados.">
+				<p:column headerText="N° Pieza Dental" width="120">
+					<h:outputText value="#{h.piezaDental}" />
+				</p:column>
+				<p:column headerText="Hallazgo">
+					<h:outputText value="#{h.hallazgo}" />
+				</p:column>
+				<p:column headerText="Cantidad" width="80">
+					<h:outputText value="#{h.cantidad}" />
+				</p:column>
+				<p:column headerText="Estado" width="120">
+					<h:outputText value="#{h.estado != null ? h.estado : 'Pendiente'}" />
+				</p:column>
+				<p:column headerText="Nota">
+					<p:inputTextarea value="#{h.nota}" autoResize="true" />
+				</p:column>			
+				<p:column headerText="Acciones" width="100"  style="white-space:nowrap;">
+					<div style="display:flex; gap:4px; align-items:center;">
+						<p:commandButton icon="ui-icon-pencil" style="margin-right:4px;" title="Editar" />				
+						<p:commandButton icon="ui-icon-trash" styleClass="ui-button-danger"	title="Eliminar" />			
+					</div>
+				</p:column>
+			</p:dataTable>
 
             <br />
 
@@ -259,6 +262,7 @@
 			</div>
 	</div>				
 
+	<!-- DIALOG SERVICIOS ODONTOGRAMA -->
 	<p:dialog id="dlgServicio" widgetVar="dlgServicio"
 		header="Odontograma - Seleccione Servicio" modal="true" width="680"
 		appendTo="@(body)" responsive="true" resizable="false"

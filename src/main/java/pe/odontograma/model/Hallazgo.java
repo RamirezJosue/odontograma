@@ -11,6 +11,7 @@ public class Hallazgo implements Serializable {
 	private String codigo; // código: "CE", "AM", "IMP", ...
 	private String numDientes; // "1 O 2"
 	private int cantidad;
+	private String estado;
 	private String nota;
 
 	public Hallazgo() {
@@ -80,5 +81,13 @@ public class Hallazgo implements Serializable {
 
 	public void setNota(String n) {
 		this.nota = n;
+	}
+
+	public String getEstado() { 
+		return estado; 
+	}
+
+	public void setEstado(String estado) { 
+		this.estado = estado; 
 	}
 }

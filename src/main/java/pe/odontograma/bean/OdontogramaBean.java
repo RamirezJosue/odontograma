@@ -60,6 +60,7 @@ public class OdontogramaBean implements Serializable {
 		h1.setNumDientes("1");
 		h1.setCantidad(1);
 		h1.setNota("Caries [K02]");
+		h1.setEstado("Pendiente");
 		hallazgos.add(h1);
 
 		// 🔵 TABLA EVOLUCIÓN (FAKE)
@@ -80,7 +81,7 @@ public class OdontogramaBean implements Serializable {
 	public String guardarServicioCompleto() {
 
 		if (hallazgos == null)    hallazgos    = new ArrayList<>();
-    if (hallazgosEvo == null) hallazgosEvo = new ArrayList<>();
+    	if (hallazgosEvo == null) hallazgosEvo = new ArrayList<>();
 	
 	    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
@@ -123,6 +124,7 @@ public class OdontogramaBean implements Serializable {
 	    nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
 	    nuevo.setCantidad(1);
 	    nuevo.setNota(buildNota(tipo, codigo, sups));
+		nuevo.setEstado(determinarEstado(tipo));
 
 	    hallazgos.add(nuevo);
 
@@ -142,7 +144,14 @@ public class OdontogramaBean implements Serializable {
 	        default:              return tipo;
 	    }
 	}
-	
+
+	private String determinarEstado(String tipo) {
+		switch (tipo) {
+			case "implante": return "No Aplica";
+			default:         return "Pendiente";
+		}
+	}
+
 	private String buildNota(String tipo, String codigo, String sups) {
 		StringBuilder sb = new StringBuilder();
 		switch (tipo) {
