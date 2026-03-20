@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
-@ManagedBean
+import javax.faces.bean.ManagedBean;    
+import javax.faces.bean.ViewScoped;     
+import javax.faces.context.FacesContext;
+import javax.annotation.PostConstruct;
+@ManagedBean(name = "odontogramaBean")
 @ViewScoped
 public class OdontogramaBean implements Serializable {
 
@@ -28,6 +29,7 @@ public class OdontogramaBean implements Serializable {
 	private String colorServicio; // "#0055aa" | "#cc0000"
 
 	private List<Hallazgo> hallazgos;
+	private List<Hallazgo> hallazgosEvo;
 	private String servicioSeleccionado;
 	private String subtipoSeleccionado;
 
@@ -36,21 +38,50 @@ public class OdontogramaBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		paciente = new Paciente();
-		hallazgos = new ArrayList<>();
 
+		hallazgos = new ArrayList<>();
+		hallazgosEvo = new ArrayList<>();
+
+		// 👤 PACIENTE FAKE
 		paciente.setApellidosNombres("GARCIA PEREZ, JUAN CARLOS");
 		paciente.setDocumento("12345678");
-		paciente.setFechaNacimiento(new Date()); // En producción, esto vendría de BD
+		paciente.setFechaNacimiento(new Date());
 		paciente.setGenero("Masculino");
 		paciente.setCorreo("juan.perez@email.com");
 		paciente.setCelular("987654321");
 		paciente.setSucursal("PRINCIPAL");
 		paciente.setFechaAdmision(new Date());
 
-		System.out.println("=== OdontogramaBean inicializado ===");
+		// 🟢 TABLA PRINCIPAL (FAKE)
+		Hallazgo h1 = new Hallazgo();
+		h1.setPiezaDental("11");
+		h1.setHallazgo("Caries");
+		h1.setCodigo("K02");
+		h1.setNumDientes("1");
+		h1.setCantidad(1);
+		h1.setNota("Caries [K02]");
+		hallazgos.add(h1);
+
+		// 🔵 TABLA EVOLUCIÓN (FAKE)
+		Hallazgo e1 = new Hallazgo();
+		e1.setPiezaDental("11");
+		e1.setHallazgo("Control");
+		e1.setCodigo("EV1");
+		e1.setNumDientes("1");
+		e1.setCantidad(1);
+		e1.setNota("Seguimiento de caries");
+
+
+		hallazgosEvo.add(e1);
+
+		System.out.println("=== OdontogramaBean inicializado con DATA FAKE ===");
 	}
 
 	public String guardarServicioCompleto() {
+
+		if (hallazgos == null)    hallazgos    = new ArrayList<>();
+    if (hallazgosEvo == null) hallazgosEvo = new ArrayList<>();
+	
 	    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
 	    String tipo = params.getOrDefault("hallazgoTipo", "");
@@ -250,5 +281,13 @@ public class OdontogramaBean implements Serializable {
 
 	public void setPaciente(Paciente paciente) {
 		this.paciente = paciente;
+	}
+
+	public List<Hallazgo> getHallazgosEvo() {
+		return hallazgosEvo;
+	}
+	
+	public int getTotalHallazgosEvo() {
+		return hallazgosEvo != null ? hallazgosEvo.size() : 0;
 	}
 }

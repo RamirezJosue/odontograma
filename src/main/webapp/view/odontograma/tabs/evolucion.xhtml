@@ -1,7 +1,66 @@
 <ui:composition
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
 
+    <div class="observacion-section" style="margin: 1rem 0;">	
+        <p:fieldset legend="Evaluación Odontológica" styleClass="evaluacion-fieldset">
+            <div class="evaluacion-subsection">
+                <h:outputLabel for="observacion" value="Observaciones:" />
+                <p:inputTextarea 
+                    id="observacion" 
+                    rows="3" 
+                    cols="20" 
+                    placeholder="Ingrese la observacion..." 
+                    styleClass="evaluacion-textarea" />
+            </div>
+        </p:fieldset>	
+    </div>		
+    
     <h:outputText value="Odontograma Evolución (pendiente diseño)"/>
+
+    <div class="hallazgos hallazgos-update-region">
+        <p:fieldset legend="Registro de Hallazgos">
+            <h:form id="formHallazgosEvo">              
+
+                <p:dataTable id="tablaHallazgosEvo" 
+                    value="#{odontogramaBean.hallazgosEvo}" 
+                    var="h"
+                    styleClass="registro-hallazgos-table" 
+                    editable="true"
+                    emptyMessage="No hay hallazgos registrados.">
+
+                    <p:column headerText="N° Pieza Dental">
+                        <h:outputText value="#{h.piezaDental}" />
+                    </p:column>
+
+                    <p:column headerText="Hallazgo">
+                        <h:outputText value="#{h.hallazgo}" />
+                    </p:column>
+
+                    <p:column headerText="Código">
+                        <h:outputText value="#{h.codigo}" />
+                    </p:column>
+
+                    <p:column headerText="N° Dientes">
+                        <h:outputText value="#{h.numDientes}" />
+                    </p:column>
+
+                    <p:column headerText="Nota">
+                        <p:inputTextarea value="#{h.nota}" autoResize="true" />
+                    </p:column>
+
+                </p:dataTable>
+
+                <br />
+                
+                <h:panelGroup id="totalPanelEvo" style="margin-left:20px">
+                    <strong>Total:</strong> #{odontogramaBean.totalHallazgosEvo}
+                </h:panelGroup>
+
+            </h:form>
+        </p:fieldset>
+    </div>
+
 </ui:composition>

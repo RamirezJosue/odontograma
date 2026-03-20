@@ -123,7 +123,7 @@
 	<!-- ===== SELECTOR DENTICIÓN Y FECHA ===== -->
 	<div class="odontograma-flex" style="margin: 1rem 0;">
 		<div class="flex-left">
-			<h:form id="formDenticion">
+			
 				<p:fieldset legend="Tipo de Dentición">
 					<p:selectOneRadio id="denticionRadio"
 						value="#{odontogramaBean.tipoDenticion}"
@@ -134,7 +134,7 @@
 						<f:selectItem itemLabel="Dentición Decidua" itemValue="decidua" />
 					</p:selectOneRadio>
 				</p:fieldset>
-			</h:form>
+			
 		</div>
 		<div class="flex-right">
 			<p:fieldset legend="Fecha de Creación">
@@ -147,58 +147,51 @@
 	<div style="margin: 2rem 0; text-align: center; overflow-x: auto;">
 		<svg id="odontograma" preserveAspectRatio="xMidYMid meet"
 			style="border: 1px solid #ddd; background: white; display: block; margin: 0 auto;">
-    </svg>
+    	</svg>
 	</div>
 
 	<!-- ===== TABLA DE HALLAZGOS ===== -->
-	<div class="hallazgos hallazgos-update-region">
-		<p:fieldset legend="Registro de Hallazgos">
-			<h:form id="formHallazgos">
+<div class="hallazgos hallazgos-update-region">
+    <p:fieldset legend="Registro de Hallazgos">
 
+        <h:form id="formAdicionar">
 
-				<p:remoteCommand name="guardarServicioBean"
-					action="#{odontogramaBean.guardarServicioCompleto}"
-					process="@this"
-					update="tablaHallazgos totalPanel"
-					oncomplete="console.log('[AJAX] guardarServicioBean complete')" />
+            <p:dataTable id="tablaHallazgos" 
+                value="#{odontogramaBean.hallazgos}" var="h"
+                styleClass="registro-hallazgos-table" editable="true"
+                emptyMessage="No hay hallazgos registrados.">
+                <p:column headerText="N° Pieza Dental">
+                    <h:outputText value="#{h.piezaDental}" />
+                </p:column>
+                <p:column headerText="Hallazgo">
+                    <h:outputText value="#{h.hallazgo}" />
+                </p:column>
+                <p:column headerText="Código">
+                    <h:outputText value="#{h.codigo}" />
+                </p:column>
+                <p:column headerText="N° Dientes">
+                    <h:outputText value="#{h.numDientes}" />
+                </p:column>
+                <p:column headerText="Nota">
+                    <p:inputTextarea value="#{h.nota}" autoResize="true" />
+                </p:column>
+            </p:dataTable>
 
-	
+            <br />
 
-				<p:remoteCommand name="enviarDiente"
-					action="#{odontogramaBean.recibirDiente}"
-					process="@this" />
+            <p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
+                action="#{odontogramaBean.adicionarHallazgo}"
+                process="@this"
+                update="tablaHallazgos totalPanel" />
 
-
-				<p:dataTable id="tablaHallazgos" value="#{odontogramaBean.hallazgos}" var="h"
-					styleClass="registro-hallazgos-table" editable="true"
-					emptyMessage="No hay hallazgos registrados.">
-					<p:column headerText="N° Pieza Dental">
-						<h:outputText value="#{h.piezaDental}" />
-					</p:column>
-					<p:column headerText="Hallazgo">
-						<h:outputText value="#{h.hallazgo}" />
-					</p:column>
-					<p:column headerText="Código">
-						<h:outputText value="#{h.codigo}" />
-					</p:column>
-					<p:column headerText="N° Dientes">
-						<h:outputText value="#{h.numDientes}" />
-					</p:column>
-					<p:column headerText="Nota">
-						<p:inputTextarea value="#{h.nota}" autoResize="true" />
-					</p:column>
-				</p:dataTable>
-				<br />
-				<p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
-					action="#{odontogramaBean.adicionarHallazgo}"
-					process="@this"
-					update="tablaHallazgos totalPanel" />
-				<h:panelGroup id="totalPanel" style="margin-left:20px">
-					<strong>Total:</strong> #{odontogramaBean.totalHallazgos}
+            <h:panelGroup id="totalPanel" style="margin-left:20px">
+                <strong>Total:</strong> #{odontogramaBean.totalHallazgos}
             </h:panelGroup>
-			</h:form>
-		</p:fieldset>
-	</div>
+
+        </h:form>
+
+    </p:fieldset>
+</div>
 
 	<!-- ===== Diagnósticos  ===== -->
 	<div class="diagnostico-section" style="margin: 1rem 0;">
@@ -273,14 +266,19 @@
 		onShow="onDialogAbierto();">
 
 		<h:form id="formServicio">
+			 <p:remoteCommand name="guardarServicioBean"
+            action="#{odontogramaBean.guardarServicioCompleto}"
+            process="@form"
+            update=":tabsOdontograma:formAdicionar:tablaHallazgos 
+            :tabsOdontograma:formAdicionar:totalPanel"
+            oncomplete="console.log('[AJAX] guardarServicioBean complete')" />
 
+        <p:remoteCommand name="enviarDiente"
+            action="#{odontogramaBean.recibirDiente}"
+            process="@form" />
 
 			<div id="dienteInfoHeader" class="diente-info-bar">Diente: —</div>
-
-
 			<div id="panelServiciosPF" style="display: block;">
-
-
 				<div class="servicio-card">
 					<div class="servicio-header" onclick="toggleServicio(this)">
 						<span>Implante</span><span class="flecha">▼</span>
@@ -506,7 +504,6 @@
 					</div>
 				</div>
 			</div>
-
 
 			<div id="cariesVisorContainer" class="visor-container"
 				style="display: none;">
