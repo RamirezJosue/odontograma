@@ -1,18 +1,21 @@
 package pe.odontograma.bean;
 
+import pe.odontograma.model.Diagnostico;
 import pe.odontograma.model.Hallazgo;
 import pe.odontograma.model.Paciente;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;    
-import javax.faces.bean.ViewScoped;     
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.annotation.PostConstruct;
+
 @ManagedBean(name = "odontogramaBean")
 @ViewScoped
 public class OdontogramaBean implements Serializable {
@@ -35,6 +38,24 @@ public class OdontogramaBean implements Serializable {
 
 	private Paciente paciente;
 
+	private String diagnosticoSeleccionado;
+	private List<Diagnostico> diagnosticos = new ArrayList<>();
+	private static final Map<String, String> DESCRIPCIONES_CIE10 = new HashMap<>();
+	static {
+		DESCRIPCIONES_CIE10.put("K02", "Caries dental");
+		DESCRIPCIONES_CIE10.put("K03", "Otras enfermedades de los tejidos dentales duros");
+		DESCRIPCIONES_CIE10.put("K04", "Enfermedades de la pulpa y tejidos periapicales");
+		DESCRIPCIONES_CIE10.put("K05", "Gingivitis y enfermedades periodontales");
+		DESCRIPCIONES_CIE10.put("K06", "Otros trastornos de la encía y zona edéntula");
+		DESCRIPCIONES_CIE10.put("K07", "Anomalías dentofaciales");
+		DESCRIPCIONES_CIE10.put("K08", "Otros trastornos de los dientes");
+		DESCRIPCIONES_CIE10.put("K09", "Quistes de la región bucal");
+		DESCRIPCIONES_CIE10.put("K10", "Otros trastornos de los maxilares");
+		DESCRIPCIONES_CIE10.put("K11", "Enfermedades de las glándulas salivales");
+		DESCRIPCIONES_CIE10.put("K12", "Estomatitis y lesiones afines");
+		DESCRIPCIONES_CIE10.put("K13", "Otras enfermedades del labio y mucosa bucal");
+		DESCRIPCIONES_CIE10.put("K14", "Enfermedades de la lengua");
+	}
 	@PostConstruct
 	public void init() {
 		paciente = new Paciente();
@@ -72,7 +93,6 @@ public class OdontogramaBean implements Serializable {
 		e1.setCantidad(1);
 		e1.setNota("Seguimiento de caries");
 
-
 		hallazgosEvo.add(e1);
 
 		System.out.println("=== OdontogramaBean inicializado con DATA FAKE ===");
@@ -80,102 +100,160 @@ public class OdontogramaBean implements Serializable {
 
 	public String guardarServicioCompleto() {
 
-		if (hallazgos == null)    hallazgos    = new ArrayList<>();
-    	if (hallazgosEvo == null) hallazgosEvo = new ArrayList<>();
-	
-	    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		if (hallazgos == null)
+			hallazgos = new ArrayList<>();
+		if (hallazgosEvo == null)
+			hallazgosEvo = new ArrayList<>();
 
-	    String tipo = params.getOrDefault("hallazgoTipo", "");
-	    String codigo = params.getOrDefault("hallazgoCodigo", "");
-	    String sups = params.getOrDefault("numDientes", "");
-	    String diente = params.getOrDefault("dienteId", dienteSeleccionado != null ? dienteSeleccionado : "");
-	    String colorParam = params.getOrDefault("colorServicio", "");
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
-	    System.out.println("=== guardarServicioCompleto ===");
-	    System.out.println("  Diente    : " + diente);
-	    System.out.println("  Tipo      : " + tipo);
-	    System.out.println("  Código    : " + codigo);
+		String tipo = params.getOrDefault("hallazgoTipo", "");
+		String codigo = params.getOrDefault("hallazgoCodigo", "");
+		String sups = params.getOrDefault("numDientes", "");
+		String diente = params.getOrDefault("dienteId", dienteSeleccionado != null ? dienteSeleccionado : "");
+		String colorParam = params.getOrDefault("colorServicio", "");
 
-	    if (diente == null || diente.trim().isEmpty()) {
-	        System.out.println("  WARN: Diente vacío, ignorado.");
-	        return null;
-	    }
-	    if (tipo == null || tipo.trim().isEmpty()) {
-	        System.out.println("  WARN: Tipo vacío, ignorado.");
-	        return null;
-	    }
+		System.out.println("=== guardarServicioCompleto ===");
+		System.out.println("  Diente    : " + diente);
+		System.out.println("  Tipo      : " + tipo);
+		System.out.println("  Código    : " + codigo);
 
-	    this.dienteSeleccionado = diente;
-	    this.hallazgoTipo = tipo;
-	    this.hallazgoCodigo = codigo;
-	    this.numDientes = sups;
-	    if (!colorParam.isEmpty())
-	        this.colorServicio = colorParam;
+		if (diente == null || diente.trim().isEmpty()) {
+			System.out.println("  WARN: Diente vacío, ignorado.");
+			return null;
+		}
+		if (tipo == null || tipo.trim().isEmpty()) {
+			System.out.println("  WARN: Tipo vacío, ignorado.");
+			return null;
+		}
 
-	    String hallazgoNombre = buildHallazgoNombre(tipo);
+		this.dienteSeleccionado = diente;
+		this.hallazgoTipo = tipo;
+		this.hallazgoCodigo = codigo;
+		this.numDientes = sups;
+		if (!colorParam.isEmpty())
+			this.colorServicio = colorParam;
 
-	    hallazgos.removeIf(h -> h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
-	            && h.getHallazgo() != null && h.getHallazgo().equals(hallazgoNombre));
+		String hallazgoNombre = buildHallazgoNombre(tipo, codigo);
 
-	    Hallazgo nuevo = new Hallazgo();
-	    nuevo.setPiezaDental(diente);
-	    nuevo.setHallazgo(hallazgoNombre);
-	    nuevo.setCodigo(codigo);
-	    nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
-	    nuevo.setCantidad(1);
-	    nuevo.setNota(buildNota(tipo, codigo, sups));
+		hallazgos.removeIf(h -> 
+			h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
+			&& h.getCodigo() != null && h.getCodigo().equals(codigo));
+
+		Hallazgo nuevo = new Hallazgo();
+		nuevo.setPiezaDental(diente);
+		nuevo.setHallazgo(hallazgoNombre);
+		nuevo.setCodigo(codigo);
+		nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
+		nuevo.setCantidad(calcularCantidad(tipo, sups));
+		nuevo.setNota(buildNota(tipo, codigo, sups));
 		nuevo.setEstado(determinarEstado(tipo));
 
-	    hallazgos.add(nuevo);
+		hallazgos.add(nuevo);
 
-	    System.out.println("  Hallazgo agregado. Total: " + hallazgos.size());
-	    return null;
+		System.out.println("  Hallazgo agregado. Total: " + hallazgos.size());
+		return null;
 	}
 
-	
-	private String buildHallazgoNombre(String tipo) {
-	    switch (tipo) {
-	        case "caries":        return "Caries";
-	        case "restauracion":  return "Restauración";
-	        case "implante":      return "Implante";
-	        case "dienteAusente": return "Diente Ausente";
-	        case "extraccion":    return "Extracción";
-	        case "protesis":      return "Prótesis";
-	        default:              return tipo;
-	    }
+	private int calcularCantidad(String tipo, String sups) {
+		if ((tipo.equals("caries") || tipo.equals("restauracion")) 
+			&& sups != null && !sups.trim().isEmpty() && !sups.equals("—")) {
+			return sups.split(",").length;
+		}
+		return 1;
+	}
+
+	private String buildHallazgoNombre(String tipo, String codigo) {
+		switch (tipo) {
+			case "caries":
+				switch (codigo) {
+					case "CE":  return "Caries a Nivel del Esmalte";
+					case "CD":  return "Caries a Nivel de la Dentina";
+					case "CDP": return "Caries a Nivel de la Pulpa";
+					case "MB":  return "Mancha Blanca";
+					case "CDT": return "Caries Dental";
+					case "CR":  return "Caries Recurrente";
+					default:    return "Caries";
+				}
+			case "restauracion":
+				switch (codigo) {
+					case "AM_bueno": return "Amalgama en Buen Estado";
+					case "AM_malo":  return "Amalgama en Mal Estado";
+					case "R_bueno":  return "Resina en Buen Estado";
+					case "R_malo":   return "Resina en Mal Estado";
+					case "IV_bueno": return "Ionómero de Vidrio en Buen Estado";
+					case "IV_malo":  return "Ionómero de Vidrio en Mal Estado";
+					case "IM_bueno": return "Incrustación Metálica en Buen Estado";
+					case "IM_malo":  return "Incrustación Metálica en Mal Estado";
+					case "IE_bueno": return "Incrustación Estética en Buen Estado";
+					case "IE_malo":  return "Incrustación Estética en Mal Estado";
+					case "C_bueno":  return "Carilla en Buen Estado";
+					case "C_malo":   return "Carilla en Mal Estado";
+					default:         return "Restauración";
+				}
+			case "implante":
+				switch (codigo) {
+					case "IMPA": return "Implante en Buen Estado";
+					case "IMPR": return "Implante en Mal Estado";
+					default:     return "Implante";
+				}
+			case "dienteAusente":
+				switch (codigo) {
+					case "DEX": return "Diente Extraído por Caries";
+					case "DNE": return "Diente No Erupcionado";
+					case "DAO": return "Diente Ausente por Otra Razón";
+					default:    return "Diente Ausente";
+				}
+			case "extraccion": return "Extracción Dental";
+			case "protesis":
+				switch (codigo) {
+					case "P_bueno":  return "Prótesis Dental en Buen Estado";
+					case "P_malo":   return "Prótesis Dental en Mal Estado";
+					case "--_bueno": return "Prótesis Parcial Fija en Buen Estado";
+					case "--_malo":  return "Prótesis Parcial Fija en Mal Estado";
+					case "=_bueno":  return "Prótesis Completa en Buen Estado";
+					case "=_malo":   return "Prótesis Completa en Mal Estado";
+					case "*_bueno":  return "Prótesis Parcial Removible en Buen Estado";
+					case "*_malo":   return "Prótesis Parcial Removible en Mal Estado";
+					default:         return "Prótesis";
+				}
+			default: return tipo;
+		}
 	}
 
 	private String determinarEstado(String tipo) {
 		switch (tipo) {
-			case "implante": return "No Aplica";
-			default:         return "Pendiente";
+			case "implante":
+				return "No Aplica";
+			default:
+				return "Pendiente";
 		}
 	}
 
 	private String buildNota(String tipo, String codigo, String sups) {
 		StringBuilder sb = new StringBuilder();
 		switch (tipo) {
-		case "caries":
-			sb.append("Caries");
-			break;
-		case "restauracion":
-			sb.append("Restauración");
-			break;
-		case "implante":
-			sb.append("Implante");
-			break;
-		case "dienteAusente":
-			sb.append("Diente ausente");
-			break;
-		case "extraccion":
-			sb.append("Extracción");
-			break;
-		case "protesis":
-			sb.append("Prótesis");
-			break;
-		default:
-			sb.append(tipo);
-			break;
+			case "caries":
+				sb.append("Caries");
+				break;
+			case "restauracion":
+				sb.append("Restauración");
+				break;
+			case "implante":
+				sb.append("Implante");
+				break;
+			case "dienteAusente":
+				sb.append("Diente ausente");
+				break;
+			case "extraccion":
+				sb.append("Extracción");
+				break;
+			case "protesis":
+				sb.append("Prótesis");
+				break;
+			default:
+				sb.append(tipo);
+				break;
 		}
 		sb.append(" [").append(codigo).append("]");
 		if (sups != null && !sups.isEmpty() && !sups.equals("—")) {
@@ -199,13 +277,48 @@ public class OdontogramaBean implements Serializable {
 		return null;
 	}
 
-	public String getDienteSeleccionado() {
-		return dienteSeleccionado;
+	public void eliminarHallazgo(Hallazgo h) {
+		hallazgos.remove(h);
 	}
 
 	public String adicionarHallazgo() {
 		hallazgos.add(new Hallazgo());
 		return null;
+	}
+
+	public void agregarDiagnostico() {
+		if (diagnosticoSeleccionado == null || diagnosticoSeleccionado.trim().isEmpty())
+			return;
+
+		// Verificar que no esté duplicado
+		boolean existe = diagnosticos.stream()
+				.anyMatch(d -> d.getCie10().equals(diagnosticoSeleccionado));
+		if (existe)
+			return;
+
+		String descripcion = DESCRIPCIONES_CIE10.getOrDefault(diagnosticoSeleccionado, diagnosticoSeleccionado);
+		Diagnostico nuevo = new Diagnostico(diagnosticos.size() + 1, diagnosticoSeleccionado, descripcion);
+		diagnosticos.add(nuevo);
+		diagnosticoSeleccionado = null; // limpiar combo
+	}
+
+	public void eliminarDiagnostico(Diagnostico d) {
+		diagnosticos.remove(d);
+		// Renumerar
+		for (int i = 0; i < diagnosticos.size(); i++) {
+			diagnosticos.get(i).setNumero(i + 1);
+		}
+	}
+
+	public void limpiarDiagnosticos() {
+		diagnosticos.clear();
+		diagnosticoSeleccionado = null;
+	}
+
+	// SET AND GETTERS
+	
+	public String getDienteSeleccionado() {
+		return dienteSeleccionado;
 	}
 
 	public int getTotalHallazgos() {
@@ -285,7 +398,7 @@ public class OdontogramaBean implements Serializable {
 	}
 
 	public Paciente getPaciente() {
-    	return paciente;
+		return paciente;
 	}
 
 	public void setPaciente(Paciente paciente) {
@@ -295,8 +408,25 @@ public class OdontogramaBean implements Serializable {
 	public List<Hallazgo> getHallazgosEvo() {
 		return hallazgosEvo;
 	}
-	
+
 	public int getTotalHallazgosEvo() {
 		return hallazgosEvo != null ? hallazgosEvo.size() : 0;
 	}
+
+	public String getDiagnosticoSeleccionado() {
+		return diagnosticoSeleccionado;
+	}
+
+	public void setDiagnosticoSeleccionado(String d) {
+		this.diagnosticoSeleccionado = d;
+	}
+
+	public List<Diagnostico> getDiagnosticos() {
+		return diagnosticos;
+	}
+
+	public void setDiagnosticos(List<Diagnostico> list) {
+		this.diagnosticos = list;
+	}
+	
 }

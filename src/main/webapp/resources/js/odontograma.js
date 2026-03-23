@@ -893,7 +893,8 @@ function guardarRestauracion() {
 	if (typeof guardarServicioBean === 'function') {
 		guardarServicioBean([
 		    { name: 'hallazgoTipo',   value: 'restauracion' },
-		    { name: 'hallazgoCodigo', value: restauracionActual.codigo },
+		    // { name: 'hallazgoCodigo', value: restauracionActual.codigo },
+			{ name: 'hallazgoCodigo', value: restauracionActual.codigo + '_' + (restauracionActual.color === '#0055aa' ? 'bueno' : 'malo') },
 		    { name: 'colorServicio',  value: restauracionActual.color },
 		    { name: 'numDientes',     value: restauracionActual.superficies.sort().join(',') },
 		    { name: 'dienteId',       value: dienteSeleccionado }
@@ -1089,13 +1090,13 @@ function aplicarProtesis(simbolo, estado) {
 	}
 
 	if (typeof guardarServicioBean === 'function') {
-		guardarServicioBean([
-		    { name: 'hallazgoTipo',   value: 'protesis' },
-		    { name: 'hallazgoCodigo', value: simbolo },
-		    { name: 'numDientes',     value: '' },
-		    { name: 'dienteId',       value: dienteSeleccionado }
-		]);
-	}
+    guardarServicioBean([
+        { name: 'hallazgoTipo',   value: 'protesis' },
+        { name: 'hallazgoCodigo', value: simbolo + '_' + estado }, 
+        { name: 'numDientes',     value: '' },
+        { name: 'dienteId',       value: dienteSeleccionado }
+    ]);
+}
 }
 
 function calcularYProtesis(cajasRango) {
