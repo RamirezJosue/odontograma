@@ -1061,42 +1061,47 @@ function aplicarExtraccion() {
 
 // ===== PRÓTESIS =====
 function aplicarProtesis(simbolo, estado) {
-	var _diente = getDienteActivo();
-	if (!_diente) return;
-	dienteSeleccionado = _diente;
-	var id    = parseInt(_diente, 10);
-	var color = estado === 'bueno' ? '#0055aa' : '#cc0000';
+    var _diente = getDienteActivo();
+    if (!_diente) return;
+    dienteSeleccionado = _diente;
+    var id    = parseInt(_diente, 10);
+    var color = estado === 'bueno' ? '#0055aa' : '#cc0000';
 
-	if (simbolo === 'P') {
-		resetearDiente(id);
-		var caja = document.querySelector('[data-diente-id="' + dienteSeleccionado + '"]');
-		if (caja) {
-			caja.dataset.estado      = 'protesis';
-			caja.dataset.estadoColor = color;
-			cambiarColorNumeroDiente(id, color);
-			aplicarTextoAlCajon(caja, 'P', color);
-		}
-		if (typeof PF === 'function') PF('dlgServicio').hide();
-	} else if (simbolo === '=') {
-		resetearDiente(id);
-		dibujarProtesisCompleta(id, color);
-		if (typeof PF === 'function') PF('dlgServicio').hide();
-	} else if (simbolo === '--') {
-		if (typeof PF === 'function') PF('dlgServicio').hide();
-		abrirModalPuente(id, color); return;
-	} else if (simbolo === '*') {
-		if (typeof PF === 'function') PF('dlgServicio').hide();
-		abrirModalRemovible(id, color); return;
-	}
+    if (simbolo === 'P') {
+        resetearDiente(id);
+        var caja = document.querySelector('[data-diente-id="' + dienteSeleccionado + '"]');
+        if (caja) {
+            caja.dataset.estado      = 'protesis';
+            caja.dataset.estadoColor = color;
+            cambiarColorNumeroDiente(id, color);
+            aplicarTextoAlCajon(caja, 'P', color);
+        }
+       
+        if (typeof guardarServicioBean === 'function') {
+            guardarServicioBean([
+                { name: 'hallazgoTipo',   value: 'protesis' },
+                { name: 'hallazgoCodigo', value: 'P_' + estado },
+                { name: 'numDientes',     value: '' },
+                { name: 'dienteId',       value: dienteSeleccionado }
+            ]);
+        }
+        if (typeof PF === 'function') PF('dlgServicio').hide();
 
-	if (typeof guardarServicioBean === 'function') {
-    guardarServicioBean([
-        { name: 'hallazgoTipo',   value: 'protesis' },
-        { name: 'hallazgoCodigo', value: simbolo + '_' + estado }, 
-        { name: 'numDientes',     value: '' },
-        { name: 'dienteId',       value: dienteSeleccionado }
-    ]);
-}
+    } else if (simbolo === '=') {
+        resetearDiente(id);
+        dibujarProtesisCompleta(id, color, estado); 
+        if (typeof PF === 'function') PF('dlgServicio').hide();
+
+    } else if (simbolo === '--') {
+        if (typeof PF === 'function') PF('dlgServicio').hide();
+        abrirModalPuente(id, color); 
+        return;
+
+    } else if (simbolo === '*') {
+        if (typeof PF === 'function') PF('dlgServicio').hide();
+        abrirModalRemovible(id, color); 
+        return;
+    }
 }
 
 function calcularYProtesis(cajasRango) {
@@ -1135,6 +1140,16 @@ function confirmarPuente(dI, color) {
 	document.getElementById('modalPuente').remove();
 	if (!v) return;
 	dibujarPuenteFijo(dI, v, color);
+
+	var estado = color === '#0055aa' ? 'bueno' : 'malo';
+    if (typeof guardarServicioBean === 'function') {
+        guardarServicioBean([
+            { name: 'hallazgoTipo',   value: 'protesis' },
+            { name: 'hallazgoCodigo', value: '--_' + estado },
+            { name: 'numDientes',     value: dI + '-' + v },
+            { name: 'dienteId',       value: String(dI) }
+        ]);
+    }
 }
 
 function dibujarPuenteFijo(dI, dF, color) {
@@ -1178,7 +1193,7 @@ function dibujarPuenteFijo(dI, dF, color) {
 	svg.appendChild(gP);
 }
 
-function dibujarProtesisCompleta(dId, color) {
+function dibujarProtesisCompleta(dId, color, estado) {
 	var tc  = Array.prototype.slice.call(svg.querySelectorAll('[data-diente-id]'));
 	var cR  = tc.filter(function(c) { return parseInt(c.getAttribute("data-diente-id"), 10) === dId; })[0];
 	if (!cR) return;
@@ -1209,6 +1224,19 @@ function dibujarProtesisCompleta(dId, color) {
 		cambiarColorNumeroDiente(did, color);
 	});
 	svg.appendChild(g);
+
+	var idInicio = fila[0].getAttribute('data-diente-id');
+    var idFin    = fila[fila.length - 1].getAttribute('data-diente-id');
+    var rango    = idInicio + '-' + idFin; 
+	
+    if (typeof guardarServicioBean === 'function') {
+        guardarServicioBean([
+            { name: 'hallazgoTipo',   value: 'protesis' },
+            { name: 'hallazgoCodigo', value: '=_' + estado },
+            { name: 'numDientes',     value: rango },
+            { name: 'dienteId',       value: String(dId) }
+        ]);
+    }
 }
 
 function abrirModalRemovible(dI, color) {
@@ -1232,6 +1260,16 @@ function confirmarRemovible(dI, color) {
 	document.getElementById('modalRemovible').remove();
 	if (!v) return;
 	dibujarProtesisRemovible(dI, v, color);
+
+	var estado = color === '#0055aa' ? 'bueno' : 'malo';
+    if (typeof guardarServicioBean === 'function') {
+        guardarServicioBean([
+            { name: 'hallazgoTipo',   value: 'protesis' },
+            { name: 'hallazgoCodigo', value: '*_' + estado },
+            { name: 'numDientes',     value: dI + '-' + v },
+            { name: 'dienteId',       value: String(dI) }
+        ]);
+    }
 }
 
 function dibujarProtesisRemovible(dI, dF, color) {

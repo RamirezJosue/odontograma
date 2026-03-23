@@ -80,7 +80,7 @@ public class OdontogramaBean implements Serializable {
 		h1.setCodigo("K02");
 		h1.setNumDientes("1");
 		h1.setCantidad(1);
-		h1.setNota("Caries [K02]");
+		h1.setNota("");
 		h1.setEstado("Pendiente");
 		hallazgos.add(h1);
 
@@ -107,16 +107,17 @@ public class OdontogramaBean implements Serializable {
 
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
-		String tipo = params.getOrDefault("hallazgoTipo", "");
-		String codigo = params.getOrDefault("hallazgoCodigo", "");
-		String sups = params.getOrDefault("numDientes", "");
-		String diente = params.getOrDefault("dienteId", dienteSeleccionado != null ? dienteSeleccionado : "");
+		String tipo     = params.getOrDefault("hallazgoTipo",   "");
+		String codigo   = params.getOrDefault("hallazgoCodigo", "");
+		String sups     = params.getOrDefault("numDientes",     "");
+		String diente   = params.getOrDefault("dienteId", dienteSeleccionado != null ? dienteSeleccionado : "");
 		String colorParam = params.getOrDefault("colorServicio", "");
 
 		System.out.println("=== guardarServicioCompleto ===");
 		System.out.println("  Diente    : " + diente);
 		System.out.println("  Tipo      : " + tipo);
 		System.out.println("  Código    : " + codigo);
+		System.out.println("  Sups      : " + sups);
 
 		if (diente == null || diente.trim().isEmpty()) {
 			System.out.println("  WARN: Diente vacío, ignorado.");
@@ -128,29 +129,41 @@ public class OdontogramaBean implements Serializable {
 		}
 
 		this.dienteSeleccionado = diente;
-		this.hallazgoTipo = tipo;
-		this.hallazgoCodigo = codigo;
-		this.numDientes = sups;
+		this.hallazgoTipo       = tipo;
+		this.hallazgoCodigo     = codigo;
+		this.numDientes         = sups;
 		if (!colorParam.isEmpty())
-			this.colorServicio = colorParam;
+			this.colorServicio  = colorParam;
 
 		String hallazgoNombre = buildHallazgoNombre(tipo, codigo);
 
-		hallazgos.removeIf(h -> 
-			h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
-			&& h.getCodigo() != null && h.getCodigo().equals(codigo));
+		boolean esProtesisRango = tipo.equals("protesis") 
+								&& sups != null 
+								&& sups.contains("-");
+		String piezaDental = esProtesisRango ? sups : diente;
+	
+		if (esProtesisRango) {
+			hallazgos.removeIf(h ->
+				h.getCodigo() != null && h.getCodigo().equals(codigo));
+		} else {
+			hallazgos.removeIf(h ->
+				h.getPiezaDental() != null && h.getPiezaDental().equals(diente)
+				&& h.getCodigo() != null && h.getCodigo().equals(codigo));
+		}
 
 		Hallazgo nuevo = new Hallazgo();
-		nuevo.setPiezaDental(diente);
+		nuevo.setPiezaDental(piezaDental);
 		nuevo.setHallazgo(hallazgoNombre);
 		nuevo.setCodigo(codigo);
 		nuevo.setNumDientes(sups.isEmpty() ? "—" : sups);
 		nuevo.setCantidad(calcularCantidad(tipo, sups));
-		nuevo.setNota(buildNota(tipo, codigo, sups));
-		nuevo.setEstado(determinarEstado(tipo));
+		// nuevo.setNota(buildNota(tipo, codigo, sups));
+		nuevo.setNota("");
+		nuevo.setEstado(determinarEstado(tipo, codigo));
 
 		hallazgos.add(nuevo);
 
+		System.out.println("  Pieza     : " + piezaDental);
 		System.out.println("  Hallazgo agregado. Total: " + hallazgos.size());
 		return null;
 	}
@@ -221,10 +234,29 @@ public class OdontogramaBean implements Serializable {
 		}
 	}
 
-	private String determinarEstado(String tipo) {
+	private String determinarEstado(String tipo, String codigo) {
 		switch (tipo) {
 			case "implante":
+				// bueno = IMPA → No Aplica | fallido = IMPR → Pendiente
+				return "IMPA".equals(codigo) ? "No Aplica" : "Pendiente";
+
+			case "caries":
+				return "Pendiente";
+
+			case "dienteAusente":
 				return "No Aplica";
+
+			case "extraccion":
+				return "Pendiente";
+
+			case "protesis":
+				 if (codigo == null) return "Pendiente";
+            		return codigo.contains("bueno") ? "No Aplica" : "Pendiente";
+
+			case "restauracion":
+				  if (codigo == null) return "Pendiente";
+					return codigo.contains("bueno") ? "No Aplica" : "Pendiente";
+
 			default:
 				return "Pendiente";
 		}
@@ -250,6 +282,9 @@ public class OdontogramaBean implements Serializable {
 				break;
 			case "protesis":
 				sb.append("Prótesis");
+				if (sups != null && !sups.isEmpty() && sups.contains("-")) {
+					sb.append(" (dientes ").append(sups).append(")");
+				}
 				break;
 			default:
 				sb.append(tipo);
