@@ -17,9 +17,49 @@
             </div>
         </p:fieldset>	
     </div>		
-    
-    <h:outputText value="Odontograma Evolución (pendiente diseño)"/>
 
+    <div class="odontograma-flex" style="margin: 1rem 0; width: 100%;">
+        <p:fieldset legend="Odontograma de Evolución" styleClass="evaluacion-fieldset" style="width: 100%; box-sizing: border-box;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="width: 48%;">			
+                    <p:fieldset legend="Número de Sesión">
+                        <p:inputText value="1" />
+                    </p:fieldset>			
+                </div>
+                <div style="width: 48%;">
+                    <p:fieldset legend="Fecha de Creación">
+                        <p:datePicker pattern="yyyy-MM-dd" showIcon="true" />
+                    </p:fieldset>
+                </div>
+            </div>
+
+
+           <!-- SVG Permanente - Adulto -->
+            <div style="margin: 1rem 0; text-align: center; overflow-x: auto; width: 100%;">            
+                <svg id="odontogramaPermanente" 
+                    preserveAspectRatio="xMidYMid meet"
+                    style="border:1px solid #ddd; background:white; 
+                        display:block; margin:0 auto; width:100%; min-width:800px;">
+                </svg>
+            </div>
+
+            <!-- SVG Decidua -->
+            <!-- <div style="margin: 1rem 0; text-align: center; overflow-x: auto;">                
+                <svg id="odontogramaDecidua" 
+                    preserveAspectRatio="xMidYMid meet"
+                    style="border:1px solid #ddd; background:white; 
+                        display:block; margin:0 auto; width:100%;">
+                </svg>
+            </div> -->
+
+            <!-- Cargar los JS -->
+            <h:outputScript library="js" name="odontograma-permanente.js" target="body" />
+            <h:outputScript library="js" name="odontograma-decidua.js" target="body" />
+    
+        </p:fieldset>
+    </div>
+
+    
     <div class="hallazgos hallazgos-update-region">
         <p:fieldset legend="Registro de Hallazgos">
             <h:form id="formHallazgosEvo">              

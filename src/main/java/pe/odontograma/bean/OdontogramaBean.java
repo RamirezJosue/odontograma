@@ -59,14 +59,13 @@ public class OdontogramaBean implements Serializable {
 		DESCRIPCIONES_CIE10.put("K13", "Otras enfermedades del labio y mucosa bucal");
 		DESCRIPCIONES_CIE10.put("K14", "Enfermedades de la lengua");
 	}
+
 	@PostConstruct
 	public void init() {
 		paciente = new Paciente();
-
 		hallazgos = new ArrayList<>();
 		hallazgosEvo = new ArrayList<>();
-
-		// 👤 PACIENTE FAKE
+		
 		paciente.setApellidosNombres("GARCIA PEREZ, JUAN CARLOS");
 		paciente.setDocumento("12345678");
 		paciente.setFechaNacimiento(new Date());
@@ -75,30 +74,8 @@ public class OdontogramaBean implements Serializable {
 		paciente.setCelular("987654321");
 		paciente.setSucursal("PRINCIPAL");
 		paciente.setFechaAdmision(new Date());
-
-		// 🟢 TABLA PRINCIPAL (FAKE)
-		Hallazgo h1 = new Hallazgo();
-		h1.setPiezaDental("11");
-		h1.setHallazgo("Caries");
-		h1.setCodigo("K02");
-		h1.setNumDientes("1");
-		h1.setCantidad(1);
-		h1.setNota("");
-		h1.setEstado("Pendiente");
-		hallazgos.add(h1);
-
-		// 🔵 TABLA EVOLUCIÓN (FAKE)
-		Hallazgo e1 = new Hallazgo();
-		e1.setPiezaDental("11");
-		e1.setHallazgo("Control");
-		e1.setCodigo("EV1");
-		e1.setNumDientes("1");
-		e1.setCantidad(1);
-		e1.setNota("Seguimiento de caries");
-
-		hallazgosEvo.add(e1);
-
-		System.out.println("=== OdontogramaBean inicializado con DATA FAKE ===");
+		
+		System.out.println("=== OdontogramaBean inicializado  ===");
 	}
 
 	public String guardarServicioCompleto() {
@@ -263,41 +240,6 @@ public class OdontogramaBean implements Serializable {
 			default:
 				return "Pendiente";
 		}
-	}
-
-	private String buildNota(String tipo, String codigo, String sups) {
-		StringBuilder sb = new StringBuilder();
-		switch (tipo) {
-			case "caries":
-				sb.append("Caries");
-				break;
-			case "restauracion":
-				sb.append("Restauración");
-				break;
-			case "implante":
-				sb.append("Implante");
-				break;
-			case "dienteAusente":
-				sb.append("Diente ausente");
-				break;
-			case "extraccion":
-				sb.append("Extracción");
-				break;
-			case "protesis":
-				sb.append("Prótesis");
-				if (sups != null && !sups.isEmpty() && sups.contains("-")) {
-					sb.append(" (dientes ").append(sups).append(")");
-				}
-				break;
-			default:
-				sb.append(tipo);
-				break;
-		}
-		sb.append(" [").append(codigo).append("]");
-		if (sups != null && !sups.isEmpty() && !sups.equals("—")) {
-			sb.append(" - Sup: ").append(sups);
-		}
-		return sb.toString();
 	}
 
 	public void setDienteSeleccionado(String dienteSeleccionado) {

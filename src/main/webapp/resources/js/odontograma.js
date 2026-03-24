@@ -1,6 +1,5 @@
 // ============================================================
-// ODONTOGRAMA JS - Versión Corregida
-// Fixes: condición de carrera, bugs de tipo, var e=getElementById
+// ODONTOGRAMA JS 
 // ============================================================
 
 var svg = document.getElementById("odontograma");

@@ -167,19 +167,17 @@
 
 	<!-- ===== SELECTOR DENTICIÓN Y FECHA ===== -->
 	<div class="odontograma-flex" style="margin: 1rem 0;">
-		<div class="flex-left">
-			
+		<div class="flex-left">			
 				<p:fieldset legend="Tipo de Dentición">
 					<p:selectOneRadio id="denticionRadio"
 						value="#{odontogramaBean.tipoDenticion}"
 						onchange="tipoDenticion = this.value; actualizarOdontograma();">
-						<f:selectItem itemLabel="Dentición Mixta" itemValue="mixta" />
-						<f:selectItem itemLabel="Dentición Permanente"
-							itemValue="permanente" />
-						<f:selectItem itemLabel="Dentición Decidua" itemValue="decidua" />
+						<f:selectItem itemLabel="Dentición Adulto"
+						itemValue="permanente" />
+						<f:selectItem itemLabel="Dentición Infantil" itemValue="decidua" />
+						<f:selectItem itemLabel="Dentición Mixto" itemValue="mixta" />
 					</p:selectOneRadio>
-				</p:fieldset>
-			
+				</p:fieldset>			
 		</div>
 		<div class="flex-right">
 			<p:fieldset legend="Fecha de Creación">
