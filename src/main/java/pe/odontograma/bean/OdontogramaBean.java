@@ -14,6 +14,9 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.event.RowEditEvent;
+
 import javax.annotation.PostConstruct;
 
 @ManagedBean(name = "odontogramaBean")
@@ -319,6 +322,14 @@ public class OdontogramaBean implements Serializable {
 	public String adicionarHallazgo() {
 		hallazgos.add(new Hallazgo());
 		return null;
+	}
+
+	public void onRowEdit(RowEditEvent<Hallazgo> event) {
+		System.out.println("Fila editada: " + event.getObject().getPiezaDental());
+	}
+
+	public void onRowCancel(RowEditEvent<Hallazgo> event) {
+		System.out.println("Edición cancelada");
 	}
 
 	public void agregarDiagnostico() {

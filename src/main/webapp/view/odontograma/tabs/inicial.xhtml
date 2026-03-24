@@ -89,6 +89,51 @@
     .btn-cancelar-visor:hover { background:#545b62; }
     .btn-volver { padding:6px 14px; background:none; border:1px solid #aaa; border-radius:5px; cursor:pointer; font-size:13px; color:#555; }
     .btn-volver:hover { background:#f0f0f0; }
+
+
+
+	/* ===== FILA EN MODO EDICIÓN - quitar fondo oscuro ===== */
+		.registro-hallazgos-table .ui-row-editing td {
+			background-color: #ffffff !important;
+			background: #ffffff !important;
+		}
+
+		.registro-hallazgos-table .ui-row-editing .ui-cell-editor-output {
+			background-color: #ffffff !important;
+		}
+
+		.registro-hallazgos-table tr.ui-row-editing {
+			background-color: #ffffff !important;
+			background: #ffffff !important;
+		}
+
+		/* Quitar el highlight de la fila seleccionada/editando */
+		.registro-hallazgos-table .ui-state-highlight td,
+		.registro-hallazgos-table tr.ui-row-editing td {
+			background: #f9f9ff !important;
+			color: #333 !important;
+		}
+
+
+		/* ===== Botón eliminar igual que iconos rowEditor ===== */
+		.registro-hallazgos-table .ui-button-flat {
+			background: none !important;
+			border: none !important;
+			box-shadow: none !important;
+			padding: 2px !important;
+			width: 20px !important;
+			height: 20px !important;
+			color: #cc0000 !important;
+		}
+
+		.registro-hallazgos-table .ui-button-flat .ui-icon {
+			color: #cc0000 !important;
+		}
+
+		.registro-hallazgos-table .ui-button-flat:hover {
+			background: none !important;
+			opacity: 0.7;
+		}
 </h:outputStylesheet>
 
 	<div class="evaluacion-odontologica">
@@ -156,94 +201,110 @@
 
         <h:form id="formAdicionar">
 
-            <p:dataTable id="tablaHallazgos" value="#{odontogramaBean.hallazgos}" var="h" styleClass="registro-hallazgos-table" editable="true" editMode="cell" emptyMessage="No hay hallazgos registrados.">
+       <p:dataTable id="tablaHallazgos" 
+			value="#{odontogramaBean.hallazgos}" 
+			var="h"
+			rowIndexVar="rowIndex"
+			styleClass="registro-hallazgos-table" 
+			editable="true" 
+			editMode="row"
+			emptyMessage="No hay hallazgos registrados.">
 
-				<p:column headerText="N° Pieza Dental" width="120">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{h.piezaDental}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{h.piezaDental}" style="width:100%" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+			<p:ajax event="rowEdit"       
+				listener="#{odontogramaBean.onRowEdit}"   
+				update=":tabsOdontograma:formAdicionar:tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel" />
 
-				<p:column headerText="Hallazgo">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{h.hallazgo}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{h.hallazgo}" style="width:100%" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+			<p:ajax event="rowEditCancel" 
+				listener="#{odontogramaBean.onRowCancel}" 
+				update=":tabsOdontograma:formAdicionar:tablaHallazgos" />
 
-				<p:column headerText="Cantidad" width="80">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{h.cantidad}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputText value="#{h.cantidad}" style="width:100%" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+			<p:column headerText="N°" width="40">
+				<h:outputText value="#{rowIndex + 1}" style="color:#2E6E9E; font-weight:bold;" />
+			</p:column>
 
-				<p:column headerText="Estado" width="120">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{h.estado != null ? h.estado : 'Pendiente'}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:selectOneMenu value="#{h.estado}" style="width:100%">
-								<f:selectItem itemLabel="Pendiente"  itemValue="Pendiente" />
-								<f:selectItem itemLabel="No Aplica"  itemValue="No Aplica" />
-								<f:selectItem itemLabel="Completado" itemValue="Completado" />
-							</p:selectOneMenu>
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+			<p:column headerText="N° Pieza Dental" width="120">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{h.piezaDental}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{h.piezaDental}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
 
-				<p:column headerText="Nota">
-					<p:cellEditor>
-						<f:facet name="output">
-							<h:outputText value="#{h.nota}" />
-						</f:facet>
-						<f:facet name="input">
-							<p:inputTextarea value="#{h.nota}" autoResize="true" style="width:100%" />
-						</f:facet>
-					</p:cellEditor>
-				</p:column>
+			<p:column headerText="Hallazgo">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{h.hallazgo}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{h.hallazgo}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
 
-				<p:column headerText="Acciones" width="100" style="white-space:nowrap;">
-					<div style="display:flex; gap:4px; align-items:center;">
-						<p:commandButton icon="ui-icon-pencil" 
-							title="Editar"
-							process="@this"
-							update="tablaHallazgos" />
-						<p:commandButton icon="ui-icon-trash" 
-							styleClass="ui-button-danger"
-							title="Eliminar"
-							process="@this"
-							update="tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel"
-							action="#{odontogramaBean.eliminarHallazgo(h)}" />
-					</div>
-				</p:column>
+			<p:column headerText="Cantidad" width="80">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{h.cantidad}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{h.cantidad}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
 
-			</p:dataTable>
+			<p:column headerText="Estado" width="120">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{h.estado != null ? h.estado : 'Pendiente'}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:selectOneMenu value="#{h.estado}" style="width:100%">
+							<f:selectItem itemLabel="Pendiente"  itemValue="Pendiente" />
+							<f:selectItem itemLabel="No Aplica"  itemValue="No Aplica" />
+						</p:selectOneMenu>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
 
-            <br />
+			<p:column headerText="Nota">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{h.nota}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{h.nota}" autoResize="true" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
 
-            <p:commandButton value="Adicionar Nuevo Hallazgo" icon="pi pi-plus"
-                action="#{odontogramaBean.adicionarHallazgo}"
-                process="@this"
-                update="tablaHallazgos totalPanel" />
+			<p:column headerText="Editar" width="60" style="text-align:center;">
+				<p:rowEditor />
+			</p:column>
+
+			<p:column headerText="Elim" width="60" style="text-align:center;">
+				<p:commandButton icon="ui-icon-trash" 
+					styleClass="ui-button-danger ui-button-flat"
+					title="Eliminar"
+					process="@this"
+					update=":tabsOdontograma:formAdicionar:tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel"
+					action="#{odontogramaBean.eliminarHallazgo(h)}" />
+			</p:column>
+
+		</p:dataTable>
+
+            <br />       
 
             <h:panelGroup id="totalPanel" style="margin-left:20px">
-                <strong>Total:</strong> #{odontogramaBean.totalHallazgos}
+                <strong>Total de Hallazgos:</strong> #{odontogramaBean.totalHallazgos}
             </h:panelGroup>
+
+    		<p:commandButton value="Nuevo Hallazgo" icon="pi pi-plus"
+				action="#{odontogramaBean.adicionarHallazgo}"
+				process="@this"
+				update="tablaHallazgos totalPanel" />
 
         </h:form>
 
