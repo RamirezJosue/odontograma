@@ -196,190 +196,232 @@
 	</div>
 
 	<!-- ===== TABLA DE HALLAZGOS ===== -->
-<div class="hallazgos hallazgos-update-region">
-    <p:fieldset legend="Registro de Hallazgos">
+	<div class="hallazgos hallazgos-update-region">
+		<p:fieldset legend="Registro de Hallazgos">
 
-        <h:form id="formAdicionar">
+			<h:form id="formAdicionar">
 
-       <p:dataTable id="tablaHallazgos" 
-			value="#{odontogramaBean.hallazgos}" 
-			var="h"
-			rowIndexVar="rowIndex"
-			styleClass="registro-hallazgos-table" 
-			editable="true" 
-			editMode="row"
-			emptyMessage="No hay hallazgos registrados.">
+		<p:dataTable id="tablaHallazgos" 
+				value="#{odontogramaBean.hallazgos}" 
+				var="h"
+				rowIndexVar="rowIndex"
+				styleClass="registro-hallazgos-table" 
+				editable="true" 
+				editMode="row"
+				emptyMessage="No hay hallazgos registrados.">
 
-			<p:ajax event="rowEdit"       
-				listener="#{odontogramaBean.onRowEdit}"   
-				update=":tabsOdontograma:formAdicionar:tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel" />
+				<p:ajax event="rowEdit"       
+					listener="#{odontogramaBean.onRowEdit}"   
+					update=":tabsOdontograma:formAdicionar:tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel" />
 
-			<p:ajax event="rowEditCancel" 
-				listener="#{odontogramaBean.onRowCancel}" 
-				update=":tabsOdontograma:formAdicionar:tablaHallazgos" />
+				<p:ajax event="rowEditCancel" 
+					listener="#{odontogramaBean.onRowCancel}" 
+					update=":tabsOdontograma:formAdicionar:tablaHallazgos" />
 
-			<p:column headerText="N°" width="40">
-				<h:outputText value="#{rowIndex + 1}" style="color:#2E6E9E; font-weight:bold;" />
-			</p:column>
+				<p:column headerText="N°" width="40">
+					<h:outputText value="#{rowIndex + 1}" style="color:#2E6E9E; font-weight:bold;" />
+				</p:column>
 
-			<p:column headerText="N° Pieza Dental" width="120">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{h.piezaDental}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText value="#{h.piezaDental}" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
+				<p:column headerText="N° Pieza Dental" width="120">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{h.piezaDental}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{h.piezaDental}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
 
-			<p:column headerText="Hallazgo">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{h.hallazgo}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText value="#{h.hallazgo}" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
+				<p:column headerText="Hallazgo">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{h.hallazgo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{h.hallazgo}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
 
-			<p:column headerText="Cantidad" width="80">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{h.cantidad}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText value="#{h.cantidad}" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
+				<p:column headerText="Cantidad" width="80">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{h.cantidad}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{h.cantidad}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
 
-			<p:column headerText="Estado" width="120">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{h.estado != null ? h.estado : 'Pendiente'}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:selectOneMenu value="#{h.estado}" style="width:100%">
-							<f:selectItem itemLabel="Pendiente"  itemValue="Pendiente" />
-							<f:selectItem itemLabel="No Aplica"  itemValue="No Aplica" />
-						</p:selectOneMenu>
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
+				<p:column headerText="Estado" width="120">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{h.estado != null ? h.estado : 'Pendiente'}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu value="#{h.estado}" style="width:100%">
+								<f:selectItem itemLabel="Pendiente"  itemValue="Pendiente" />
+								<f:selectItem itemLabel="No Aplica"  itemValue="No Aplica" />
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
 
-			<p:column headerText="Nota">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{h.nota}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText value="#{h.nota}" autoResize="true" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
+				<p:column headerText="Nota">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{h.nota}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{h.nota}" autoResize="true" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
 
-			<p:column headerText="Editar" width="60" style="text-align:center;">
-				<p:rowEditor />
-			</p:column>
+				<p:column headerText="Editar" width="60" style="text-align:center;">
+					<p:rowEditor />
+				</p:column>
 
-			<p:column headerText="Elim" width="60" style="text-align:center;">
-				<p:commandButton icon="ui-icon-trash" 
-					styleClass="ui-button-danger ui-button-flat"
-					title="Eliminar"
+				<p:column headerText="Elim" width="60" style="text-align:center;">
+					<p:commandButton icon="ui-icon-trash" 
+						styleClass="ui-button-danger ui-button-flat"
+						title="Eliminar"
+						process="@this"
+						update=":tabsOdontograma:formAdicionar:tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel"
+						action="#{odontogramaBean.eliminarHallazgo(h)}" />
+				</p:column>
+
+			</p:dataTable>
+
+				<br />       
+				<p:commandButton value="Nuevo Hallazgo" icon="pi pi-plus"
+					action="#{odontogramaBean.adicionarHallazgo}"
 					process="@this"
-					update=":tabsOdontograma:formAdicionar:tablaHallazgos :tabsOdontograma:formAdicionar:totalPanel"
-					action="#{odontogramaBean.eliminarHallazgo(h)}" />
-			</p:column>
+					update="tablaHallazgos totalPanel" />
 
-		</p:dataTable>
+				<h:panelGroup id="totalPanel" style="margin-left:20px">
+					<strong>Total de Hallazgos:</strong> #{odontogramaBean.totalHallazgos}
+				</h:panelGroup>
 
-            <br />       
+		
 
-            <h:panelGroup id="totalPanel" style="margin-left:20px">
-                <strong>Total de Hallazgos:</strong> #{odontogramaBean.totalHallazgos}
-            </h:panelGroup>
+			</h:form>
 
-    		<p:commandButton value="Nuevo Hallazgo" icon="pi pi-plus"
-				action="#{odontogramaBean.adicionarHallazgo}"
-				process="@this"
-				update="tablaHallazgos totalPanel" />
-
-        </h:form>
-
-    </p:fieldset>
-</div>
+		</p:fieldset>
+	</div>
 
 	<!-- ===== Diagnósticos  ===== -->
 	<div class="diagnostico-section" style="margin: 1rem 0;">
 		<p:fieldset legend="Diagnósticos" styleClass="evaluacion-fieldset">
 			<h:form id="formDiagnostico">
 				<div class="evaluacion-combo-container">
-					<h:outputLabel for="diagnosticoCombo" value="Seleccione Diagnóstico CIE-10:" />
-					<p:selectOneMenu id="diagnosticoCombo" 
-						value="#{odontogramaBean.diagnosticoSeleccionado}"
-						filter="true" filterMatchMode="contains" 
-						panelStyle="width:400px">
-						<p:ajax event="change" 
-							listener="#{odontogramaBean.agregarDiagnostico}"
-							update="tablaDiagnostico"
-							process="diagnosticoCombo" />
-						<f:selectItem itemLabel="Seleccione..." itemValue=""
-							noSelectionOption="true" />
-						<f:selectItem itemLabel="K02 - Caries dental"          itemValue="K02" />
-						<f:selectItem itemLabel="K03 - Otras enfermedades de los tejidos dentales duros" itemValue="K03" />
-						<f:selectItem itemLabel="K04 - Enfermedades de la pulpa y tejidos periapicales"  itemValue="K04" />
-						<f:selectItem itemLabel="K05 - Gingivitis y enfermedades periodontales"          itemValue="K05" />
-						<f:selectItem itemLabel="K06 - Otros trastornos de la encía y zona edéntula"    itemValue="K06" />
-						<f:selectItem itemLabel="K07 - Anomalías dentofaciales"                         itemValue="K07" />
-						<f:selectItem itemLabel="K08 - Otros trastornos de los dientes"                 itemValue="K08" />
-						<f:selectItem itemLabel="K09 - Quistes de la región bucal"                      itemValue="K09" />
-						<f:selectItem itemLabel="K10 - Otros trastornos de los maxilares"               itemValue="K10" />
-						<f:selectItem itemLabel="K11 - Enfermedades de las glándulas salivales"         itemValue="K11" />
-						<f:selectItem itemLabel="K12 - Estomatitis y lesiones afines"                   itemValue="K12" />
-						<f:selectItem itemLabel="K13 - Otras enfermedades del labio y mucosa bucal"     itemValue="K13" />
-						<f:selectItem itemLabel="K14 - Enfermedades de la lengua"                       itemValue="K14" />
-					</p:selectOneMenu>
+					<div style="display:flex; align-items:center; justify-content: space-between; gap:16px; flex-wrap:wrap;">
+						<div>
+							<h:outputLabel for="diagnosticoCombo" value="Seleccione Diagnóstico CIE-10:" style="display:block; margin-bottom:8px; font-weight:bold;" />
+							<p:selectOneMenu id="diagnosticoCombo" 
+								value="#{odontogramaBean.diagnosticoSeleccionado}"
+								filter="true" filterMatchMode="contains" 
+								panelStyle="width:400px">
+								<p:ajax event="change" 
+									listener="#{odontogramaBean.agregarDiagnostico}"
+									update="tablaDiagnostico"
+									process="diagnosticoCombo" />
+								<f:selectItem itemLabel="Seleccione..." itemValue=""
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="K02 - Caries dental"          itemValue="K02" />
+								<f:selectItem itemLabel="K03 - Otras enfermedades de los tejidos dentales duros" itemValue="K03" />
+								<f:selectItem itemLabel="K04 - Enfermedades de la pulpa y tejidos periapicales"  itemValue="K04" />
+								<f:selectItem itemLabel="K05 - Gingivitis y enfermedades periodontales"          itemValue="K05" />
+								<f:selectItem itemLabel="K06 - Otros trastornos de la encía y zona edéntula"    itemValue="K06" />
+								<f:selectItem itemLabel="K07 - Anomalías dentofaciales"                         itemValue="K07" />
+								<f:selectItem itemLabel="K08 - Otros trastornos de los dientes"                 itemValue="K08" />
+								<f:selectItem itemLabel="K09 - Quistes de la región bucal"                      itemValue="K09" />
+								<f:selectItem itemLabel="K10 - Otros trastornos de los maxilares"               itemValue="K10" />
+								<f:selectItem itemLabel="K11 - Enfermedades de las glándulas salivales"         itemValue="K11" />
+								<f:selectItem itemLabel="K12 - Estomatitis y lesiones afines"                   itemValue="K12" />
+								<f:selectItem itemLabel="K13 - Otras enfermedades del labio y mucosa bucal"     itemValue="K13" />
+								<f:selectItem itemLabel="K14 - Enfermedades de la lengua"                       itemValue="K14" />
+							</p:selectOneMenu>
+						</div>
+
+						<div style="margin-top:24px;">
+							<p:commandButton value="Nuevo Diagnóstico" icon="pi pi-plus"
+								action="#{odontogramaBean.adicionarDiagnostico}"
+								process="@this"
+								update=":tabsOdontograma:formDiagnostico:tablaDiagnostico" />
+						</div>
+					</div>
 				</div>
+
 				<p:dataTable id="tablaDiagnostico" 
 					value="#{odontogramaBean.diagnosticos}" var="d"
+					rowIndexVar="rowIndex"
 					styleClass="registro-hallazgos-table"
+					editable="true"
+					editMode="row"
 					emptyMessage="No hay diagnósticos registrados.">
-					<p:column headerText="N°" width="50">
-						<h:outputText value="#{d.numero}" />
+
+					<p:ajax event="rowEdit"       
+						listener="#{odontogramaBean.onRowEditDiagnostico}"   
+						update=":tabsOdontograma:formDiagnostico:tablaDiagnostico" />
+					<p:ajax event="rowEditCancel" 
+						listener="#{odontogramaBean.onRowCancelDiagnostico}" 
+						update=":tabsOdontograma:formDiagnostico:tablaDiagnostico" />
+
+					<p:column headerText="N#" width="50">
+						<h:outputText value="#{rowIndex + 1}" style="color:#2E6E9E; font-weight:bold;" />
 					</p:column>
+
 					<p:column headerText="CIE-10" width="80">
-						<h:outputText value="#{d.cie10}" />
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{d.cie10}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{d.cie10}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
 					</p:column>
+
 					<p:column headerText="Diagnóstico">
-						<h:outputText value="#{d.descripcion}" />
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{d.descripcion}" />
+							</f:facet>         
+							<f:facet name="input">
+								<p:inputText value="#{d.descripcion}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
 					</p:column>
+
 					<p:column headerText="Detalle">
-						<p:inputText value="#{d.detalle}" style="width:100%" />
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{d.detalle}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{d.detalle}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
 					</p:column>
-					<p:column headerText="Acciones" width="80">
-						<div style="display:flex; gap:4px;">
-							<p:commandButton icon="ui-icon-trash"
-								styleClass="ui-button-danger"
-								title="Eliminar"
-								process="@this"
-								update="tablaDiagnostico"
-								action="#{odontogramaBean.eliminarDiagnostico(d)}" />
-						</div>
+
+					<p:column headerText="Editar" width="60" style="text-align:center;">
+						<p:rowEditor />
 					</p:column>
-				</p:dataTable>
-				<div style="margin-top: 20px; text-align: right;">
-					<p:commandButton value="Guardar Evaluación" 
-						icon="ui-icon-check" 
-						styleClass="ui-button-success" />
-					<p:commandButton value="Limpiar" 
-						icon="ui-icon-trash"
-						styleClass="ui-button-secondary" 
-						style="margin-left:10px;"
-						action="#{odontogramaBean.limpiarDiagnosticos}"
-						update="tablaDiagnostico" />
-				</div>
+
+					<p:column headerText="Eliminar" width="70" style="text-align:center;">
+						<p:commandButton icon="ui-icon-trash"
+							styleClass="ui-button-danger ui-button-flat"
+							title="Eliminar"
+							process="@this"
+							update=":tabsOdontograma:formDiagnostico:tablaDiagnostico"
+							action="#{odontogramaBean.eliminarDiagnostico(d)}" />
+					</p:column>
+
+				</p:dataTable>		
+
 			</h:form>
 		</p:fieldset>
 	</div>
@@ -390,6 +432,22 @@
 				<p:inputTextarea id="planTrabajo" rows="5" cols="20" autoResize="true" placeholder="Ingrese el plan de trabajo..." styleClass="evaluacion-textarea" />
 			</div>
 	</div>				
+
+	<div style="margin: 2rem 0; text-align: center; display:flex; justify-content:center; gap:16px;">
+		<h:form id="formAcciones">
+			<p:commandButton value="Registrar Atención" 				
+				styleClass="ui-button-success"
+				style="padding: 10px 30px; font-size: 15px; font-weight:bold;"
+				action="#{odontogramaBean.registrarAtencion}"
+				process="@form" />
+
+			<p:commandButton value="Salir de Atención" 				
+				styleClass="ui-button-danger"
+				style="padding: 10px 30px; font-size: 15px; font-weight:bold; margin-left:10px;"
+				action="#{odontogramaBean.salirAtencion}"
+				process="@form" />
+		</h:form>
+	</div>
 
 	<!-- DIALOG SERVICIOS ODONTOGRAMA -->
 	<p:dialog id="dlgServicio" widgetVar="dlgServicio"

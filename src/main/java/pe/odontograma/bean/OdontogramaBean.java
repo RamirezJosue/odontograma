@@ -356,9 +356,33 @@ public class OdontogramaBean implements Serializable {
 		}
 	}
 
-	public void limpiarDiagnosticos() {
-		diagnosticos.clear();
-		diagnosticoSeleccionado = null;
+	public void onRowEditDiagnostico(RowEditEvent<Diagnostico> event) {
+		System.out.println("Diagnóstico editado: " + event.getObject().getCie10());
+	}
+
+	public void onRowCancelDiagnostico(RowEditEvent<Diagnostico> event) {
+		System.out.println("Edición diagnóstico cancelada");
+	}
+
+	public String adicionarDiagnostico() {
+		if (diagnosticos == null) diagnosticos = new ArrayList<>();
+		Diagnostico nuevo = new Diagnostico();
+		nuevo.setNumero(diagnosticos.size() + 1);
+		diagnosticos.add(nuevo);
+		return null;
+	}
+
+	
+	public String registrarAtencion() {
+		System.out.println("=== Registrando Atención ===");
+		System.out.println("  Hallazgos: " + (hallazgos != null ? hallazgos.size() : 0));
+		System.out.println("  Diagnósticos: " + (diagnosticos != null ? diagnosticos.size() : 0));
+		return null;
+	}
+
+	public String salirAtencion() {
+		System.out.println("=== Saliendo de Atención ===");
+		return null; 
 	}
 
 	// SET AND GETTERS
