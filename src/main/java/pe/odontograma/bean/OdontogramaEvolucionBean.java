@@ -9,6 +9,7 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 
 import javax.annotation.PostConstruct;
@@ -25,17 +26,28 @@ public class OdontogramaEvolucionBean implements Serializable {
     public void init() {
         hallazgosEvo = new ArrayList<>();
 
-        Hallazgo e1 = new Hallazgo();
-        e1.setPiezaDental("11");
-        e1.setHallazgo("Control");
-        e1.setCodigo("EV1");
-        e1.setNumDientes("1");
-        e1.setCantidad(1);
-        e1.setNota("Seguimiento de caries");
+        Hallazgo hIMP = new Hallazgo("16", "Implante Dental",            "IMP", "—", 1, "");
+        hIMP.setEstado("No Aplica");
+        hallazgosEvo.add(hIMP);
 
-        hallazgosEvo.add(e1);
+        Hallazgo hAM = new Hallazgo("24", "Amalgama Dental",            "AM",  "—", 4, "");
+        hAM.setEstado("No Aplica");
+        hallazgosEvo.add(hAM);
+
+        Hallazgo hDEX = new Hallazgo("14", "Diente Extraído por Caries", "DEX", "—", 1, "");
+        hDEX.setEstado("No Aplica");
+        hallazgosEvo.add(hDEX);
+
+        Hallazgo hCDP = new Hallazgo("11", "Caries a Nivel de la Pulpa", "CDP", "—", 2, "");
+        hCDP.setEstado("Pendiente");
+        hallazgosEvo.add(hCDP);
 
         System.out.println("=== OdontogramaEvolucionBean inicializado con DATA FAKE ===");
+    }
+
+    public String darDeAlta() {
+        System.out.println("=== Dar de Alta ejecutado ===");
+        return null;
     }
 
     public void eliminarHallazgoEvo(Hallazgo h) {
@@ -48,7 +60,11 @@ public class OdontogramaEvolucionBean implements Serializable {
     }
 
     public void onRowEdit(RowEditEvent<Hallazgo> event) {
-        System.out.println("Fila evolución editada: " + event.getObject().getPiezaDental());
+        Hallazgo h = event.getObject();
+        System.out.println("Fila evolución editada: " + h.getPiezaDental());
+        PrimeFaces.current().executeScript(
+            "repintarDiente('" + h.getPiezaDental() + "','" + h.getCodigo() + "','" + h.getEstado() + "')"
+        );
     }
 
     public void onRowCancel(RowEditEvent<Hallazgo> event) {

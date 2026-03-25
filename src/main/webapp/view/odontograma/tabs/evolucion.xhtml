@@ -1,6 +1,7 @@
 <ui:composition
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://xmlns.jcp.org/jsf/html"
+    xmlns:f="http://xmlns.jcp.org/jsf/core"
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:p="http://primefaces.org/ui">
 
@@ -58,46 +59,119 @@
     
         </p:fieldset>
     </div>
-
-    
+        
     <div class="hallazgos hallazgos-update-region">
         <p:fieldset legend="Registro de Hallazgos">
-            <h:form id="formHallazgosEvo">              
+            <h:form id="formHallazgosEvo">
 
-                <p:dataTable id="tablaHallazgosEvo" 
-                    value="#{odontogramaBean.hallazgosEvo}" 
+                <p:dataTable id="tablaHallazgosEvo"
+                    value="#{odontogramaEvolucionBean.hallazgosEvo}"
                     var="h"
-                    styleClass="registro-hallazgos-table" 
+                    rowIndexVar="rowIndex"
+                    styleClass="registro-hallazgos-table"
                     editable="true"
+                    editMode="row"
                     emptyMessage="No hay hallazgos registrados.">
 
-                    <p:column headerText="N° Pieza Dental">
-                        <h:outputText value="#{h.piezaDental}" />
+                    <p:ajax event="rowEdit"
+                        listener="#{odontogramaEvolucionBean.onRowEdit}"
+                        update=":tabsOdontograma:formHallazgosEvo:tablaHallazgosEvo :tabsOdontograma:formHallazgosEvo:totalPanelEvo" />
+
+                    <p:ajax event="rowEditCancel"
+                        listener="#{odontogramaEvolucionBean.onRowCancel}"
+                        update=":tabsOdontograma:formHallazgosEvo:tablaHallazgosEvo" />
+
+                    <p:column headerText="N°" width="40">
+                        <h:outputText value="#{rowIndex + 1}" style="color:#2E6E9E; font-weight:bold;" />
+                    </p:column>
+
+                    <p:column headerText="N° Pieza Dental" width="120">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{h.piezaDental}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{h.piezaDental}" style="width:100%" />
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Hallazgo">
-                        <h:outputText value="#{h.hallazgo}" />
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{h.hallazgo}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{h.hallazgo}" style="width:100%" />
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="Código">
-                        <h:outputText value="#{h.codigo}" />
+                    <p:column headerText="Cantidad" width="80">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{h.cantidad}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{h.cantidad}" style="width:100%" />
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
-                    <p:column headerText="N° Dientes">
-                        <h:outputText value="#{h.numDientes}" />
+                    <p:column headerText="Estado" width="120">
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{h.estado != null ? h.estado : 'Pendiente'}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:selectOneMenu value="#{h.estado}" style="width:100%">
+                                    <f:selectItem itemLabel="Pendiente"  itemValue="Pendiente" />
+                                    <f:selectItem itemLabel="Atendido"   itemValue="Atendido" />
+                                    <f:selectItem itemLabel="No Aplica"  itemValue="No Aplica" />
+                                </p:selectOneMenu>
+                            </f:facet>
+                        </p:cellEditor>
                     </p:column>
 
                     <p:column headerText="Nota">
-                        <p:inputTextarea value="#{h.nota}" autoResize="true" />
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{h.nota}" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{h.nota}" style="width:100%" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+
+                    <p:column headerText="Editar" width="60" style="text-align:center;">
+                        <p:rowEditor />
+                    </p:column>
+
+                    <p:column headerText="Elim" width="60" style="text-align:center;">
+                        <p:commandButton icon="ui-icon-trash"
+                            styleClass="ui-button-danger ui-button-flat"
+                            title="Eliminar"
+                            process="@this"
+                            update=":tabsOdontograma:formHallazgosEvo:tablaHallazgosEvo :tabsOdontograma:formHallazgosEvo:totalPanelEvo"
+                            action="#{odontogramaEvolucionBean.eliminarHallazgoEvo(h)}" />
                     </p:column>
 
                 </p:dataTable>
 
                 <br />
-                
-                <h:panelGroup id="totalPanelEvo" style="margin-left:20px">
-                    <strong>Total:</strong> #{odontogramaBean.totalHallazgosEvo}
-                </h:panelGroup>
+
+                <div style="display:flex; align-items:center; gap:16px; margin-top:8px;">
+                    <h:panelGroup id="totalPanelEvo">
+                        <strong>Total de Hallazgos:</strong> #{odontogramaEvolucionBean.totalHallazgosEvo}
+                    </h:panelGroup>
+
+                    <p:commandButton value="Nuevo Hallazgo" icon="pi pi-plus"
+                        action="#{odontogramaEvolucionBean.adicionarHallazgoEvo}"
+                        process="@this"
+                        update="tablaHallazgosEvo totalPanelEvo" />
+
+                </div>
 
             </h:form>
         </p:fieldset>
