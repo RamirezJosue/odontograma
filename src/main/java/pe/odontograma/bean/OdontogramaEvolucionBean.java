@@ -42,6 +42,14 @@ public class OdontogramaEvolucionBean implements Serializable {
         hCDP.setEstado("Pendiente");
         hallazgosEvo.add(hCDP);
 
+        Hallazgo hLinea = new Hallazgo("33-36", "Prótesis Parcial Fija",      "PPF", "33-36", 1, "");
+        hLinea.setEstado("Pendiente");
+        hallazgosEvo.add(hLinea);
+
+        Hallazgo hPPR = new Hallazgo("42-48", "Prótesis Parcial Removible", "PPR", "42-48", 1, "");
+        hPPR.setEstado("Pendiente");
+        hallazgosEvo.add(hPPR);
+
         System.out.println("=== OdontogramaEvolucionBean inicializado con DATA FAKE ===");
     }
 

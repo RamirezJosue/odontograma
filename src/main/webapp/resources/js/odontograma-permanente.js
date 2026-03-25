@@ -369,12 +369,101 @@
     svgPerm.appendChild(g);
   }
 
+  // ===== PINTAR LÍNEA (puente entre dientes) =====
+  function pintarLinea(idInicio, idFin, color) {
+    var lineaId = String(idInicio) + '-' + String(idFin);
+    var cajaInicio = null, cajaFin = null;
+    var cajas = svgPerm.querySelectorAll('rect');
+    for (var j = 0; j < cajas.length; j++) {
+      var did = cajas[j].getAttribute('data-diente-id');
+      if (did === String(idInicio)) cajaInicio = cajas[j];
+      if (did === String(idFin))    cajaFin    = cajas[j];
+    }
+    if (!cajaInicio || !cajaFin) return;
+
+    var x1    = parseFloat(cajaInicio.getAttribute('x')) + parseFloat(cajaInicio.getAttribute('width'))  / 2;
+    var x2    = parseFloat(cajaFin.getAttribute('x'))    + parseFloat(cajaFin.getAttribute('width'))    / 2;
+    var cajaY = parseFloat(cajaInicio.getAttribute('y'));
+    var cajaH = parseFloat(cajaInicio.getAttribute('height'));
+    var esInf = idInicio >= 30;
+    var lineY = esInf ? cajaY - 33 : cajaY + cajaH + 33;
+    var tick  = 7;
+
+    var g = $s('g', { 'data-linea': lineaId, 'pointer-events': 'none' });
+    g.appendChild($s('line', { x1: x1,       y1: lineY,          x2: x2,       y2: lineY,          stroke: color, 'stroke-width': '2' }));
+    g.appendChild($s('line', { x1: x1,       y1: lineY - tick/2, x2: x1,       y2: lineY + tick/2, stroke: color, 'stroke-width': '2' }));
+    g.appendChild($s('line', { x1: x2,       y1: lineY - tick/2, x2: x2,       y2: lineY + tick/2, stroke: color, 'stroke-width': '2' }));
+    svgPerm.appendChild(g);
+  }
+
+  // ===== PINTAR LÍNEA GUIONES (prótesis removible) =====
+  function pintarLineaGuiones(idInicio, idFin, color) {
+    var lineaId = String(idInicio) + '-' + String(idFin);
+    var cajaInicio = null, cajaFin = null;
+    var cajas = svgPerm.querySelectorAll('rect');
+    for (var j = 0; j < cajas.length; j++) {
+      var did = cajas[j].getAttribute('data-diente-id');
+      if (did === String(idInicio)) cajaInicio = cajas[j];
+      if (did === String(idFin))    cajaFin    = cajas[j];
+    }
+    if (!cajaInicio || !cajaFin) return;
+
+    // Usar el más a la izquierda como x1
+    var xA = Math.min(
+      parseFloat(cajaInicio.getAttribute('x')),
+      parseFloat(cajaFin.getAttribute('x'))
+    );
+    var xB = Math.max(
+      parseFloat(cajaInicio.getAttribute('x')) + parseFloat(cajaInicio.getAttribute('width')),
+      parseFloat(cajaFin.getAttribute('x'))    + parseFloat(cajaFin.getAttribute('width'))
+    );
+    var cajaY = parseFloat(cajaInicio.getAttribute('y'));
+    var cajaH = parseFloat(cajaInicio.getAttribute('height'));
+    var esInf = idInicio >= 30;
+    var midY  = esInf ? cajaY - 33 : cajaY + cajaH + 33;
+    var gap   = 5;   // separación entre las dos líneas paralelas
+    var dash  = '8,5';
+    var tick  = 10;
+
+    var g = $s('g', { 'data-linea': lineaId, 'pointer-events': 'none' });
+
+    // Dos líneas de guiones paralelas
+    g.appendChild($s('line', { x1: xA, y1: midY - gap/2, x2: xB, y2: midY - gap/2,
+      stroke: color, 'stroke-width': '1.8', 'stroke-dasharray': dash }));
+    g.appendChild($s('line', { x1: xA, y1: midY + gap/2, x2: xB, y2: midY + gap/2,
+      stroke: color, 'stroke-width': '1.8', 'stroke-dasharray': dash }));
+
+    // Conectores verticales en cada extremo
+    g.appendChild($s('line', { x1: xA, y1: midY - tick/2, x2: xA, y2: midY + tick/2,
+      stroke: color, 'stroke-width': '2' }));
+    g.appendChild($s('line', { x1: xB, y1: midY - tick/2, x2: xB, y2: midY + tick/2,
+      stroke: color, 'stroke-width': '2' }));
+
+    svgPerm.appendChild(g);
+  }
+
+  function limpiarLinea(lineaId) {
+    var existing = svgPerm.querySelectorAll('[data-linea="' + lineaId + '"]');
+    for (var i = 0; i < existing.length; i++) svgPerm.removeChild(existing[i]);
+  }
+
   // ===== REPINTAR DIENTE (llamado desde el bean via PrimeFaces) =====
   window.repintarDiente = function(piezaDental, codigo, estado) {
     var color = estado === 'Pendiente' ? '#cc0000' : '#0055aa';
-    limpiarDiente(piezaDental);
-    pintarHallazgo(parseInt(piezaDental, 10), codigo, color);
-    if (estado === 'Atendido') dibujarCaritaFeliz(piezaDental);
+    if (piezaDental.indexOf('-') !== -1) {
+      // Rango: "33-36" sólido (PPF) o guiones (PPR)
+      var parts = piezaDental.split('-');
+      limpiarLinea(piezaDental);
+      if (codigo === 'PPR') {
+        pintarLineaGuiones(parseInt(parts[0], 10), parseInt(parts[1], 10), color);
+      } else {
+        pintarLinea(parseInt(parts[0], 10), parseInt(parts[1], 10), color);
+      }
+    } else {
+      limpiarDiente(piezaDental);
+      pintarHallazgo(parseInt(piezaDental, 10), codigo, color);
+      if (estado === 'Atendido') dibujarCaritaFeliz(piezaDental);
+    }
   };
 
   // ===== INICIAR =====
@@ -446,6 +535,8 @@
       pintarHallazgo(24, 'AM',  '#0055aa');
       pintarHallazgo(14, 'DEX', '#0055aa');
       pintarHallazgo(11, 'CDP', '#cc0000');
+      pintarLinea(33, 36, '#cc0000');
+      pintarLineaGuiones(42, 48, '#cc0000');
     }, 200);
   }
 
