@@ -42,7 +42,7 @@ public class OdontogramaEvolucionBean implements Serializable {
         hCDP.setEstado("Pendiente");
         hallazgosEvo.add(hCDP);
 
-        Hallazgo hLinea = new Hallazgo("33-36", "Prótesis Parcial Fija",      "PPF", "33-36", 1, "");
+        Hallazgo hLinea = new Hallazgo("33-36", "Prótesis Parcial Fija", "PPF", "33-36", 1, "");
         hLinea.setEstado("Pendiente");
         hallazgosEvo.add(hLinea);
 
@@ -90,6 +90,13 @@ public class OdontogramaEvolucionBean implements Serializable {
     }
 
     public int getTotalHallazgosEvo() {
-        return hallazgosEvo != null ? hallazgosEvo.size() : 0;
+        if (hallazgosEvo == null) return 0;
+        int total = 0;
+        for (Hallazgo h : hallazgosEvo) {
+            if ("Pendiente".equals(h.getEstado())) {
+                total += h.getCantidad();
+            }
+        }
+        return total;
     }
 }

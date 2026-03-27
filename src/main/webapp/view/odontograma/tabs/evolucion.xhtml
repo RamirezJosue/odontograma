@@ -5,6 +5,12 @@
     xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
     xmlns:p="http://primefaces.org/ui">
 
+<h:outputStylesheet>
+    .dlg-confirm-alta .p-dialog-content { text-align: center; padding: 1.5rem 1.5rem 0.5rem; }
+    .dlg-confirm-alta .p-dialog-content p { font-size: 15px; margin-bottom: 1.2rem; }
+    .dlg-confirm-alta-buttons { display: flex; justify-content: center; gap: 16px; padding-bottom: 1rem; }
+</h:outputStylesheet>
+
     <div class="observacion-section" style="margin: 1rem 0;">	
         <p:fieldset legend="Evaluación Odontológica" styleClass="evaluacion-fieldset">
             <div class="evaluacion-subsection">
@@ -159,7 +165,9 @@
                     </h:form>            
                 </p:fieldset>
                 <h:form style="display:flex; justify-content:flex-end; margin: 0.5rem 1rem 0 1rem;">
-                    <p:commandButton value="Dar de Alta" />
+                    <p:commandButton value="Dar de Alta"
+                                     type="button"
+                                     onclick="PF('dlgConfirmAlta').show()" />
                 </h:form>
             </div>
         </p:fieldset>
@@ -172,5 +180,29 @@
             <p:commandButton value="Salir de Atención" icon="pi pi-sign-out" />
         </div>
     </h:form>
+
+    <!-- Dialog confirmación Dar de Alta -->
+    <p:dialog header="Confirmar Alta"
+              widgetVar="dlgConfirmAlta"
+              modal="false"
+              resizable="false"
+              draggable="true"
+              width="500"
+              appendTo="@(body)"
+              styleClass="dlg-confirm-alta"
+              onShow="var d=PF('dlgConfirmAlta').jq; d.css({top:(($(window).height()-d.outerHeight())/2)+$(window).scrollTop()+'px', left:(($(window).width()-d.outerWidth())/2)+'px', position:'fixed'});">
+        <p>Existen hallazgos pendientes de atención. ¿Desea continuar con el alta?</p>
+        <h:form styleClass="dlg-confirm-alta-buttons">
+            <p:commandButton value="Sí"
+                             icon="pi pi-check"
+                             styleClass="p-button-success"
+                             onclick="PF('dlgConfirmAlta').hide()" />
+            <p:commandButton value="No"
+                             icon="pi pi-times"
+                             styleClass="p-button-danger"
+                             onclick="PF('dlgConfirmAlta').hide()"
+                             type="button" />
+        </h:form>
+    </p:dialog>
 
 </ui:composition>
